@@ -21,7 +21,8 @@ export const User = sequelize.define("User", {
 export const UserOtp = sequelize.define("UserOtp", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     email: { type: DataTypes.STRING, allowNull: false },
-    otp: { type: DataTypes.STRING, allowNull: false },
+    otp: { type: DataTypes.STRING, allowNull: true },
+    reset_token: { type: DataTypes.STRING,allowNull: false },
     createdAt: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
 }, {
     tableName: "user_otp",
@@ -66,7 +67,7 @@ export const UserHistory = sequelize.define("UserHistory", {
     tableName: "user_history",
 });
 
-// Define Associations
+// Relasi
 User.hasMany(UserNotif, { foreignKey: "user_id" });
 UserNotif.belongsTo(User, { foreignKey: "user_id" });
 

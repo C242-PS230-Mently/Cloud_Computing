@@ -9,11 +9,11 @@ const sequelize = new Sequelize("mently", "root", "", {
 
 // Table name
 
-// Synchronize models with the database
-// sequelize.sync({ alter: true })
-//     .then(() => console.log("Database synchronized"))
-//     .catch((error) => console.error("Synchronization error:", error));
 
-// Default export sequelize instance for database connection
+// sequelize.sync({ alter: true })
+//     .then(() => console.log("Database diupdate"))
+//     .catch((error) => console.error("sinkronisasi gagal", error));
+
+
 
 export default sequelize;

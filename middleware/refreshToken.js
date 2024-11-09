@@ -3,19 +3,19 @@ import {User} from '../models/UserModel.js';
 
 export const verifyRefreshToken = async (req, res, next) => {
     const token = req.headers['x-refresh-token'];
-    if (!token) return res.sendStatus(401); // Jika tidak ada refresh token
+    if (!token) return res.sendStatus(401); 
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET); // Ganti dengan secret yang sesuai
+        const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET); 
         const user = await User.findOne({ where: { id: decoded.id } });
 
         if (!user || user.refresh_token !== token) {
-            return res.sendStatus(403); // Token tidak valid
+            return res.sendStatus(403); 
         }
 
-        req.user = user; // Simpan informasi pengguna
-        next(); // Lanjutkan ke middleware berikutnya
+        req.user = user; 
+        next(); 
     } catch (error) {
-        return res.sendStatus(403); // Token tidak valid
+        return res.sendStatus(403); 
     }
 };
