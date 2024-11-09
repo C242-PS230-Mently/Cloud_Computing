@@ -45,7 +45,21 @@ export const requestPasswordReset = async (req, res) => {
             from: process.env.EMAIL_USER,
             to: user.email,
             subject: "Password Reset Link",
-            text: `Click the link below to reset your password:\n\n${resetLink}`,
+            html: `
+                <p>Click the button below to reset your password:</p>
+                <p style="text-align: center;">
+                    <a href="${resetLink}" style="
+                        display: inline-block;
+                        padding: 10px 20px;
+                        font-size: 16px;
+                        color: #ffffff;
+                        background-color: #007BFF;
+                        text-decoration: none;
+                        border-radius: 5px;
+                    ">Reset Password</a>
+                </p>
+                <p>If you didn’t request this, please ignore this email.</p>
+            `,
         };
 
         await transporter.sendMail(mailOptions);

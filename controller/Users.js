@@ -96,22 +96,32 @@ export const Login = async (req, res) => {
 };
 
 // Logout function
+// Logout function
 export const Logout = async (req, res) => {
-    try {
-        const { userId } = req.body;
+    const { id } = req.body; // Get the user ID from the request body
 
-        const user = await User.findByPk(userId);
+    if (!id) {
+        return res.status(400).json({ msg: 'User ID is required for logout' });
+    }
+
+    try {
+        console.log("Logging out user ID:", id);
+
+        // Find the user by the ID provided in the request body
+        const user = await User.findByPk(id);
+
         if (!user) {
+            console.log("User not found for ID:", id);
             return res.status(400).json({ msg: 'User not found' });
         }
-        user.token = null; 
+
+        // Clear the token in the database to log the user out
+        user.token = null;
         await user.save();
 
         res.status(200).json({ msg: 'Logged out successfully' });
     } catch (error) {
-        console.error(error);
+        console.error("Error during logout:", error);
         res.status(500).json({ msg: 'Internal server error' });
     }
 };
-
-
