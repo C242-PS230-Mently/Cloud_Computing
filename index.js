@@ -1,15 +1,15 @@
 import express from "express";
 import db from "./config/database.js"
 import router from "./routes/index.js";
-import cookieParser from "cookie-parser";
 import dotenv from 'dotenv';
+import sequelize from "./config/database.js";
 dotenv.config();
 
 const app = express();
-app.use(cookieParser());
+
 
 try {
-    await db.authenticate();
+    await sequelize.authenticate();
     console.log('Database terkonek');
     
 } catch (error) {
