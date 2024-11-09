@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import Users from '../models/UserModel.js';
+import {User} from '../models/UserModel.js';
 
 export const verifyRefreshToken = async (req, res, next) => {
     const token = req.headers['x-refresh-token'];
@@ -7,7 +7,7 @@ export const verifyRefreshToken = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET); // Ganti dengan secret yang sesuai
-        const user = await Users.findOne({ where: { id: decoded.id } });
+        const user = await User.findOne({ where: { id: decoded.id } });
 
         if (!user || user.refresh_token !== token) {
             return res.sendStatus(403); // Token tidak valid
