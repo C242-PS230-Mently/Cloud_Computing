@@ -8,16 +8,20 @@ import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
 import { getDashboardById } from "../controller/user/Users.js";
+
 const router = express.Router();
 
-// dikit lg jadi
+//get all users
 router.get('/users', getUsers);
-router.get('/user/gethistory',getUserHistory)
+
+//history : tunggu model ml
+router.get('/user/gethistory',getUserHistory);
+router.post('/user/history' ,saveUserHistory);
+//konsul
 router.get('/user/questions', getAllQuestions);
 router.post('/user/responses', saveUserResponse);
-router.post('/user/history' ,saveUserHistory)
 
-
+//notif 
 
 // auth
 router.post('/auth/register', Register);

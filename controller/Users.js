@@ -7,13 +7,13 @@ import { joiLogin,joiRegister } from "./validator.js";
 
 
 const generateAccessToken = (user) => {
-    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
+    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };
 
 
-const generateRefreshToken = (user) => {
-    return jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-};
+// const generateRefreshToken = (user) => {
+//     return jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+// };
 
 
 
@@ -84,11 +84,11 @@ export const Login = async (req, res) => {
 
         const accessToken = generateAccessToken(user);
         
-        // Store the access token in the database
+       
         user.token = accessToken;
         await user.save();
 
-        // Return the access token to the client
+       
         return res.status(200).json({ accessToken });
     } catch (error) {
         console.error(error);
@@ -96,7 +96,7 @@ export const Login = async (req, res) => {
     }
 };
 
-// Logout function
+
 // Logout function
 export const Logout = async (req, res) => {
     const { id } = req.body; // Get the user ID from the request body
