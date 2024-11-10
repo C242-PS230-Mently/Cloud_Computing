@@ -7,6 +7,7 @@ import { requestPasswordReset,resetPassword } from "../controller/forgotPass.js"
 import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
+import { getDashboardById } from "../controller/user/Users.js";
 const router = express.Router();
 
 // dikit lg jadi
@@ -19,11 +20,14 @@ router.post('/user/history' ,saveUserHistory)
 
 
 // auth
-router.post('/auth/register', checkAuth, Register);
-router.post('/auth/login', checkAuth, Login);
-router.post('/auth/logout', Logout,verifyToken);
+router.post('/auth/register', Register);
+router.post('/auth/login',Login);
+router.post('/auth/logout', Logout);
 router.post('/auth/forgot-password', requestPasswordReset);
 router.post('/auth/reset-password', resetPassword);
+
+//User
+router.get('/user/dashboard/',checkAuth ,getDashboardById)
 
 router.post('/token', verifyRefreshToken, (req, res) => {
     const accessToken = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });

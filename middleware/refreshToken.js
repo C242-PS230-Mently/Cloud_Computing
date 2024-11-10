@@ -22,20 +22,29 @@ export const verifyRefreshToken = async (req, res, next) => {
 
 
 
-export const verifyToken = (req, res, next) => {
+export const verifyToken = async (req, res, next) => {
     const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Extract the token from the Authorization header
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ msg: 'Access Denied. No token provided.' });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(403).json({ msg: 'Invalid Token' });
+    try {
+        
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        
+        const user = await User.findOne({ where: { token } });
+        if (!user) {
+            return res.status(403).json({ msg: 'Invalid or expired token. Please log in again.' });
         }
 
-        req.userId = decoded.id; // Attach the user ID to the request
+        
+        req.userId = user.id;
         next();
-    });
+    } catch (err) {
+        console.error("Token verification failed:", err.message);
+        return res.status(403).json({ msg: 'Invalid Token' });
+    }
 };

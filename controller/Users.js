@@ -72,7 +72,6 @@ export const Login = async (req, res) => {
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {
-        
         const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(400).json({ msg: 'Email is not registered' });
@@ -84,14 +83,16 @@ export const Login = async (req, res) => {
         }
 
         const accessToken = generateAccessToken(user);
-        const refreshToken = generateRefreshToken(user);
-        user.token = refreshToken; 
+        
+        // Store the access token in the database
+        user.token = accessToken;
         await user.save();
 
-        res.json({ accessToken,refreshToken});
+        // Return the access token to the client
+        return res.status(200).json({ accessToken });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: 'Internal server error' });
+        return res.status(500).json({ msg: 'Internal server error' });
     }
 };
 
