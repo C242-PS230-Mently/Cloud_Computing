@@ -2,7 +2,9 @@ import Joi from 'joi';
 // Joi for validate user input
 export const joiRegister = Joi.object({
     full_name: Joi.string().min(5).required()
+    .pattern(/^[A-Za-z\s]+$/)
     .messages({
+        'string.pattern.base': 'Please enter a valid name   ', 
         'string.empty': 'Full name is required',
         'string.min': 'Full name should have at least 5 characters'
         
@@ -15,7 +17,7 @@ export const joiRegister = Joi.object({
     }),
     age: Joi.number().integer().required()
     .messages({
-        'number.integer': 'Please enter a valid number for age',
+        'number.base': 'Please enter a valid number for age',
         'any.required': 'Please enter your age'
     }) ,
     gender: Joi.string().valid('Laki Laki','Perempuan').required()

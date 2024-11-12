@@ -2,6 +2,8 @@ import { User } from "../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nanoid } from 'nanoid';
+
+
     
 import { joiLogin,joiRegister } from "./validator.js";
 
