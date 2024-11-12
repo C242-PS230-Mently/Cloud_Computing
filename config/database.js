@@ -10,10 +10,10 @@ import { Sequelize } from "sequelize";
 // Table name
 
 
-sequelize.sync({ alter: true,force: false })
-    .then(() => console.log("Database diupdate"))
-    .catch((error) => console.error("sinkronisasi gagal", error));
+// sequelize.sync({ alter: true,force: false })
+//     .then(() => console.log("Database diupdate"))
+//     .catch((error) => console.error("sinkronisasi gagal", error));
 
 
 
-export default sequelize;
+export default sequelize;       

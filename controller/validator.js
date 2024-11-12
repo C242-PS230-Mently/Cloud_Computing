@@ -13,6 +13,15 @@ export const joiRegister = Joi.object({
         'string.empty': 'Email is required',
         'string.email': 'Please enter a valid email address'
     }),
+    age: Joi.number().integer().required()
+    .messages({
+        'number.integer': 'Please enter a valid number for age',
+        'any.required': 'Please enter your age'
+    }) ,
+    gender: Joi.string().valid('Laki Laki','Perempuan').required()
+    .messages({
+        'any.required': 'Gender is required'
+    }) ,      
     password: Joi.string().min(6).required()
     .messages({
         'string.empty': 'Password is required',

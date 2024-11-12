@@ -2,7 +2,7 @@ import { User } from "../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nanoid } from 'nanoid';
-import Joi from 'joi';
+    
 import { joiLogin,joiRegister } from "./validator.js";
 
 
@@ -30,10 +30,10 @@ export const getUsers = async (req, res) => {
 
 // Register a new user
 export const Register = async (req, res) => {
-    const { full_name, email, password, confpassword } = req.body;
+    const { full_name,age,gender, email, password, confpassword } = req.body;
 
     
-    const { error } = joiRegister.validate({ full_name, email, password, confpassword });
+    const { error } = joiRegister.validate({ full_name, age,gender, email, password, confpassword });
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {
@@ -53,6 +53,8 @@ export const Register = async (req, res) => {
         await User.create({
             id: id,
             full_name: full_name,
+            age: age,
+            gender: gender,
             email: email,
             password: hashPassword
         });
