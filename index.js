@@ -3,10 +3,11 @@ import express from "express";
 import router from "./routes/index.js";
 import dotenv from 'dotenv';
 import sequelize from "./config/database.js";
-const PORT = 8000;
-
 
 dotenv.config();
+const PORT = process.env.PORT;
+
+
 const app = express();
 
 

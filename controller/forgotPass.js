@@ -72,19 +72,23 @@ export const requestPasswordReset = async (req, res) => {
 
 
 export const resetPassword = async (req, res) => {
-    const { token, newPassword } = req.body;
+    const { reset_token, newPassword } = req.body;
+
+    
+    if (!reset_token || !newPassword) {
+        return res.status(400).json({ msg: "Token and new password are required" });
+    }
 
     try {
         
-        const decoded = jwt.verify(token, process.env.JWT_RESET_SECRET);
+        const decoded = jwt.verify(reset_token, process.env.JWT_RESET_SECRET);
 
-        
-        const otpEntry = await UserOtp.findOne({ where: { reset_token: token } });
+        const otpEntry = await UserOtp.findOne({ where: { reset_token } });
         if (!otpEntry) {
             return res.status(400).json({ msg: "Invalid or expired reset token" });
         }
 
-        
+    
         const user = await User.findOne({ where: { email: otpEntry.email } });
         if (!user) {
             return res.status(404).json({ msg: "User not found" });
@@ -93,12 +97,13 @@ export const resetPassword = async (req, res) => {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(newPassword, salt);
 
+    
         user.password = hashedPassword;
         await user.save();
 
-    
-        await UserOtp.destroy({ where: { reset_token: token } });
+        await UserOtp.destroy({ where: { reset_token } });
 
+      
         res.status(200).json({ msg: "Password reset successful" });
     } catch (error) {
         console.error("Error in resetPassword:", error);

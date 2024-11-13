@@ -11,7 +11,7 @@ export const User = sequelize.define("User", {
     age: { type: DataTypes.INTEGER },
     createdAt: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
 }, {
-    tableName: "User",
+    tableName: "user",
 });
 
 export const UserOtp = sequelize.define("UserOtp", {
