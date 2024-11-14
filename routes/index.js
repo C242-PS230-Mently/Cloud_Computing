@@ -7,7 +7,7 @@ import { requestPasswordReset,resetPassword } from "../controller/forgotPass.js"
 import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
-import { getDashboardById } from "../controller/user/Users.js";
+import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
 
 const router = express.Router();
 
@@ -22,7 +22,8 @@ router.get('/user/questions', getAllQuestions);
 router.post('/user/responses', saveUserResponse);
 
 //notif 
-
+router.get('/user/getNotif',checkAuth,getNotifications)
+router.post('/user/notif',checkAuth,createNotification)
 // auth
 router.post('/auth/register', Register);
 router.post('/auth/login',Login);

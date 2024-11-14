@@ -2,7 +2,7 @@ import { User } from "../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nanoid } from 'nanoid';
-    
+import { createNotification } from "./user/Users.js";
 import { joiLogin,joiRegister } from "./validator.js";
 
 
@@ -89,6 +89,16 @@ export const Login = async (req, res) => {
        
         user.token = accessToken;
         await user.save();
+
+        await createNotification({
+            user_id: user.id,
+            notif_type: 'Welcome to Mently', // you can define this type based on your needs
+            notif_content: "Let’s make today a good day. Small steps add up, and we’re here with you every step of the way.",
+            is_read: 0, // unread
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+
 
        
         return res.status(200).json({ accessToken });
