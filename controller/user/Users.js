@@ -10,3 +10,9 @@ export const getDashboardById = (req, res) => {
         email: user.email,
     });
 };
+
+export const getnotifbyId = (req,res) => {
+    res.status(200).json({
+      "message":"testing upate"
+    })
+  };
