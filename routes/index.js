@@ -8,6 +8,7 @@ import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
 import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
+import { createArticle, getArticles, getArticleById } from "../controller/Dasboard/routeDasboard.js";
 
 const router = express.Router();
 
@@ -20,6 +21,12 @@ router.post('/user/history' ,saveUserHistory);
 //konsul
 router.get('/user/questions', getAllQuestions);
 router.post('/user/responses', saveUserResponse);
+
+// Dasboard
+
+router.get('/user/articles', getArticles);
+router.get('/user/articles/', getArticleById);
+router.post('/user/articles', createArticle);
 
 //notif 
 router.get('/user/getNotif',checkAuth,getNotifications)
@@ -37,10 +44,7 @@ router.get('/user/dashboard/',checkAuth ,getDashboardById)
 router.post('/token', verifyRefreshToken, (req, res) => {
     const accessToken = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '15m' });
     res.json({ accessToken });
-
-
-
-   
 });
+
 
 export default router;

@@ -65,6 +65,18 @@ export const UserHistory = sequelize.define("UserHistory", {
     tableName: "user_history",
 });
 
+// model dasboard
+ 
+export const Article = sequelize.define('Article', {
+
+    title: {type: DataTypes.STRING,allowNull: false},
+    publisher: {type: DataTypes.STRING,allowNull: false},
+    image_url: {type: DataTypes.STRING,allowNull: true},
+    snippet: {type: DataTypes.TEXT,allowNull: false},
+    full_article_link: {type: DataTypes.STRING,allowNull: true},
+    created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW}
+}, {tableName: 'articles',timestamps: false});
+
 // Relasi with Constraints
 User.hasMany(UserNotif, { foreignKey: { name: "user_id", allowNull: false }, onDelete: "CASCADE", onUpdate: "CASCADE" });
 UserNotif.belongsTo(User, { foreignKey: { name: "user_id", allowNull: false }, onDelete: "CASCADE", onUpdate: "CASCADE" });
