@@ -1,8 +1,8 @@
 import { Sequelize } from "sequelize";
 
 
-    const sequelize = new Sequelize("mentlydb", "root", "new_password", {
-        host: "localhost",
+    const sequelize = new Sequelize("mentlydb", "mently", "db123", {
+        host: "34.101.175.228",
         dialect: "mysql",
     });
 
