@@ -22,8 +22,8 @@ router.get('/user/questions', getAllQuestions);
 router.post('/user/responses', saveUserResponse);
 
 //update profile
-router.get('/user/getphoto',getprofileById);
-router.post('/user/upload',updatePhoto);
+router.get('/profile/getphoto',getprofileById);
+router.post('/profile/upload',updatePhoto);
 
 //notif 
 router.get('/user/getNotif',checkAuth,getNotifications)
