@@ -68,12 +68,12 @@ export const UserHistory = sequelize.define("UserHistory", {
 // model dasboard
  
 export const Article = sequelize.define('Article', {
-
+    id: {type: DataTypes.STRING,primaryKey: true,allowNull: false},
     title: {type: DataTypes.STRING,allowNull: false},
-    publisher: {type: DataTypes.STRING,allowNull: false},
+    publisher: {type: DataTypes.STRING,allowNull: true},
     image_url: {type: DataTypes.STRING,allowNull: true},
-    snippet: {type: DataTypes.TEXT,allowNull: false},
-    full_article_link: {type: DataTypes.STRING,allowNull: true},
+    snippet: {type: DataTypes.TEXT,allowNull: true},
+    full_article_link: {type: DataTypes.STRING,allowNull: false},
     created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW}
 }, {tableName: 'articles',timestamps: false});
 

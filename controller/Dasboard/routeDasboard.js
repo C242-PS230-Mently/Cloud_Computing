@@ -1,10 +1,13 @@
+import { nanoid } from 'nanoid';
 import { Article } from '../../models/UserModel.js';
 
 // CREATE: Tambah artikel baru
 export const createArticle = async (req, res) => {
     try {
         const { title, publisher, image_url, snippet, full_article_link } = req.body;
+        const id = nanoid(10);
         const newArticle = await Article.create({
+            id,
             title,
             publisher,
             image_url,
@@ -21,7 +24,10 @@ export const createArticle = async (req, res) => {
 export const getArticles = async (req, res) => {
     try {
         const articles = await Article.findAll({ order: [['created_at', 'DESC']] });
-        res.json(articles);
+        res.status(201).json({
+            message : 'creating articles is success!',
+            articles : articles 
+        })
     } catch (error) {
         res.status(500).json({ error: 'Error fetching articles' });
     }
