@@ -8,6 +8,7 @@ export const User = sequelize.define("User", {
     password: { type: DataTypes.STRING, allowNull: false },
     token: { type: DataTypes.STRING },
     profile_photo: { type: DataTypes.STRING },
+    gender: {type: DataTypes.ENUM('Laki Laki','Perempuan')},
     age: { type: DataTypes.INTEGER },
     createdAt: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
 }, {
