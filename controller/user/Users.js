@@ -93,7 +93,10 @@ export const updatePhoto = async (req, res) => {
       return res.status(400).send('No file uploaded.');
     }
 
-    const userId = req.body.userId;
+    // User information should be available in req.user after checkAuth middleware
+    const user = req.user;  // Directly access user from req.user (populated by checkAuth)
+
+    const userId = user.id;  // Access user ID from the authenticated user object
 
     if (!userId) {
       return res.status(400).send('User ID is required.');
@@ -109,6 +112,7 @@ export const updatePhoto = async (req, res) => {
       blobStream.on('finish', async () => {
         const publicUrl = `https://storage.googleapis.com/${process.env.GCLOUD_BUCKET}/${blob.name}`;
 
+        // Update the user's profile photo URL
         await User.update(
           { profile_photo: publicUrl },
           { where: { id: userId } }
@@ -124,6 +128,7 @@ export const updatePhoto = async (req, res) => {
         res.status(500).send({ error: err.message });
       });
 
+      // Start uploading the file to Google Cloud
       blobStream.end(req.file.buffer);
     } catch (err) {
       res.status(500).send({ error: err.message });
@@ -180,6 +185,31 @@ export const editProfile = async (req, res) => {
     res.status(500).json({ error: 'Something went wrong' });
   }
 };
+
+export const changePassword = async (req,res) =>{
+  try {
+    
+    const user = req.user
+    const {password} = req.body;
+
+    if(!password){
+      return res.status(400).json({message: "Password is required"});
+      
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashPassword =await bcrypt.hash(password,salt)
+
+    user.password = hashPassword ;
+
+    await user.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+
+  } catch (error) {
+    
+  }
+}
 
 
 
