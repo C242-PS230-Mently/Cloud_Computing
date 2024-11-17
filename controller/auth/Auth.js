@@ -9,7 +9,7 @@ import { Op } from "sequelize";
 
 
 const generateAccessToken = (user) => {
-    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '50m' });
 };
 
 

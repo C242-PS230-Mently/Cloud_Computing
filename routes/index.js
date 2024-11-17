@@ -10,7 +10,7 @@ import { saveUserHistory,getUserHistory } from "../controller/consult/history.js
 // import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
 import { createArticle, getArticles, getArticleById } from "../controller/Dasboard/routeDasboard.js";
 // import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
-import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile } from "../controller/user/Users.js";
+import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword } from "../controller/user/Users.js";
 
 const router = express.Router();
 
@@ -33,8 +33,9 @@ router.get('/user/dashboard/',checkAuth,getDashboardById,getNotifications);
 
 //update profile
 router.get('/user/photo/:id',getprofileById);
-router.post('/user/upload',updatePhoto);
+router.post('/user/upload',checkAuth,updatePhoto);
 router.put('/user/editprofile',checkAuth,editProfile);
+router.put('/user/changepass',checkAuth,changePassword);
 
 //notif 
 // router.get('/user/getNotif',checkAuth,getNotifications);
