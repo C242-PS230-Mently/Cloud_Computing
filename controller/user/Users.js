@@ -3,6 +3,7 @@ import {nanoid} from 'nanoid';
 import multer from 'multer';
 import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
 
@@ -141,6 +142,33 @@ export const getprofileById = async (req, res) => {
     url: user.profile_photo,
   });
 };
+
+
+
+export const editProfile = async (req, res) => {
+  try {
+    // req.user is already populated by the middleware
+    const user = req.user;
+
+    const { full_name, email, password, gender, age } = req.body;
+
+    // Update user data
+    user.full_name = full_name || user.full_name;
+    user.email = email || user.email;
+    user.password = password ? await bcrypt.hash(password, 10) : user.password;
+    user.gender = gender || user.gender;
+    user.age = age || user.age;
+
+    // Save changes
+    await user.save();
+
+    res.json({ message: 'Profile updated successfully', user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
 
 
 
