@@ -1,9 +1,9 @@
 import { UserNotif } from "../../models/UserModel.js";
 import {nanoid} from 'nanoid';
-export const getDashboardById = (req, res) => {
-   
-    const { user } = req;
 
+// dashboard
+export const getDashboardById = (req, res) => {
+    const { user } = req;
     return res.status(200).json({
         msg: 'Dashboard data',
         userId: user.id,
