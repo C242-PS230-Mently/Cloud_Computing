@@ -1,5 +1,13 @@
-import { UserNotif } from "../../models/UserModel.js";
+import { User,UserNotif } from "../../models/UserModel.js";
 import {nanoid} from 'nanoid';
+import multer from 'multer';
+import { Storage } from '@google-cloud/storage';
+import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
+
+
 
 // dashboard
 export const getDashboardById = (req, res) => {
@@ -13,9 +21,9 @@ export const getDashboardById = (req, res) => {
 };
 
 export const getNotifications = async (req, res) => {
-    const { user } = req; // Assuming req.user is populated with user data if logged in
+    const { user } = req; 
 
-    // Check if the user is logged in
+
     if (!user) {
         return res.status(401).json({ msg: 'No user logged in. Cannot retrieve notifications.' });
     }
@@ -55,3 +63,115 @@ export const createNotification = async ({ user_id, notif_type, notif_content, i
         console.error("Error creating notification:", error);
     }
 };
+
+
+
+
+
+
+
+
+const storage = new Storage({
+  projectId: process.env.GCLOUD_PROJECT,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+});
+const bucket = storage.bucket(process.env.GCLOUD_BUCKET);
+
+
+
+// Route to upload a profile photo
+export const updatePhoto = async (req, res) => {
+  upload.single('file')(req, res, async (err) => {
+    if (err) {
+      return res.status(500).send({ error: err.message });
+    }
+
+    if (!req.file) {
+      return res.status(400).send('No file uploaded.');
+    }
+
+    const userId = req.body.userId;
+
+    if (!userId) {
+      return res.status(400).send('User ID is required.');
+    }
+
+    try {
+      const blob = bucket.file(`userProfile/${userId}-profile-pic-${Date.now()}`);
+      const blobStream = blob.createWriteStream({
+        resumable: false,
+        contentType: req.file.mimetype,
+      });
+
+      blobStream.on('finish', async () => {
+        const publicUrl = `https://storage.googleapis.com/${process.env.GCLOUD_BUCKET}/${blob.name}`;
+
+        await User.update(
+          { profile_photo: publicUrl },
+          { where: { id: userId } }
+        );
+
+        res.status(200).send({
+          message: 'Profile photo uploaded successfully',
+          url: publicUrl,
+        });
+      });
+
+      blobStream.on('error', (err) => {
+        res.status(500).send({ error: err.message });
+      });
+
+      blobStream.end(req.file.buffer);
+    } catch (err) {
+      res.status(500).send({ error: err.message });
+    }
+  });
+};
+
+export const getprofileById = async (req, res) => {
+  const userId = req.params.userId;
+
+  const user = await User.findByPk(userId);
+
+  if (!user || !user.profile_photo) {
+    return res.status(404).send('Profile photo not found.');
+  }
+
+  res.status(200).send({
+    message: 'Profile photo found',
+    url: user.profile_photo,
+  });
+};
+
+
+
+export const editProfile = async (req, res) => {
+  try {
+    // req.user is already populated by the middleware
+    const user = req.user;
+
+    const { full_name, email, password, gender, age } = req.body;
+
+    // Update user data
+    user.full_name = full_name || user.full_name;
+    user.email = email || user.email;
+    user.password = password ? await bcrypt.hash(password, 10) : user.password;
+    user.gender = gender || user.gender;
+    user.age = age || user.age;
+
+    // Save changes
+    await user.save();
+
+    res.json({ message: 'Profile updated successfully', user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+};
+
+
+
+
+
+
+
