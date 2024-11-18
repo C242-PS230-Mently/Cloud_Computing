@@ -10,6 +10,7 @@ export const User = sequelize.define("User", {
     profile_photo: { type: DataTypes.STRING },
     gender: {type: DataTypes.ENUM('Laki Laki','Perempuan')},
     age: { type: DataTypes.INTEGER },
+    gender: {type: DataTypes.ENUM('Laki Laki','Perempuan')},
     createdAt: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
 }, {
     tableName: "user",
@@ -63,6 +64,30 @@ export const UserHistory = sequelize.define("UserHistory", {
 }, {
     tableName: "user_history",
 });
+
+// model dasboard
+export const Article = sequelize.define('Article', {
+    id: {type: DataTypes.STRING,primaryKey: true,allowNull: false},
+    title: {type: DataTypes.STRING,allowNull: false},
+    publisher: {type: DataTypes.STRING,allowNull: true},
+    image_url: {type: DataTypes.STRING,allowNull: true},
+    snippet: {type: DataTypes.TEXT,allowNull: true},
+    full_article_link: {type: DataTypes.STRING,allowNull: false},
+    created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW}
+}, {tableName: 'articles',timestamps: false});
+
+// // model doctor (belum ada)
+// export const Doctor = sequelize.define('Doctor', {
+//     id: {type: DataTypes.STRING, primaryKey: true, allowNull: false},
+//     name: {type: DataTypes.STRING, allowNull: false},
+//     specialization: {type: DataTypes.STRING, allowNull: false},
+//     phone_number: {type: DataTypes.STRING, allowNull: false},
+//     email: {type: DataTypes.STRING, allowNull: true},
+//     address: {type: DataTypes.TEXT, allowNull: true},
+//     image_url: {type: DataTypes.STRING, allowNull: true},
+//     created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
+//     updated_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW, onUpdate: DataTypes.NOW}
+// }, {tableName: 'doctors', timestamps: false});
 
 // Relasi with Constraints
 User.hasMany(UserNotif, { foreignKey: { name: "user_id", allowNull: false }, onDelete: "CASCADE", onUpdate: "CASCADE" });
