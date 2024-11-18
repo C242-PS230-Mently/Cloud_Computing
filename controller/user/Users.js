@@ -9,9 +9,7 @@ const upload = multer({ storage: multerStorage });
 
 
 export const getDashboardById = (req, res) => {
-   
     const { user } = req;
-
     return res.status(200).json({
         msg: 'Dashboard data',
         userId: user.id,
