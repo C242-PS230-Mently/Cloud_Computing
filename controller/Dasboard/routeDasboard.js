@@ -4,8 +4,7 @@ import { Article } from '../../models/UserModel.js';
 // CREATE: Tambah artikel baru
 export const createArticle = async (req, res) => {
     try {
-        const { title, publisher, image_url, snippet, full_article_link } = req.body;
-        const id = nanoid(10);
+        const { id, title, publisher, image_url, snippet, full_article_link } = req.body;
         const newArticle = await Article.create({
             id,
             title,
