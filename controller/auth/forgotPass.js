@@ -40,11 +40,11 @@ export const requestPasswordReset = async (req, res) => {
         });
 
         
-        const resetLink = `http://localhost:5000/reset-password?token=${resetToken}`;
+        const resetLink = `https://mentlyapps-861370546933.asia-southeast2.run.app/reset-password?token=${resetToken}`;
         const mailOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,
-            subject: "Password Reset Link",
+            subject: "Mently Password Reset Link",
             html: `
                 <p>Click the button below to reset your password:</p>
                 <p style="text-align: center;">
