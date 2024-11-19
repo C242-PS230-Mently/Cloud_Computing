@@ -5,30 +5,33 @@ import { Article } from '../../models/UserModel.js';
 export const createArticle = async (req, res) => {
     try {
         const { title, publisher, image_url, snippet, full_article_link } = req.body;
-        const id = nanoid(10);
+
         const newArticle = await Article.create({
-            id,
             title,
             publisher,
             image_url,
             snippet,
             full_article_link
         });
-        res.status(201).json(newArticle);
+
+        res.status(201).json(newArticle);  
     } catch (error) {
-        res.status(500).json({ error: 'Error creating article' });
+        console.error('Error creating article:', error); 
+        res.status(500).json({ error: 'Error creating article', message: error.message });  
     }
 };
+
 
 // READ: Ambil semua artikel
 export const getArticles = async (req, res) => {
     try {
         const articles = await Article.findAll({ order: [['created_at', 'DESC']] });
-        res.status(201).json({
-            message : 'creating articles is success!',
-            articles : articles 
-        })
+        res.status(200).json({
+            message: 'Fetching articles is successful!',
+            articles: articles
+        });
     } catch (error) {
+        console.error('Error fetching articles:', error);  // Menampilkan error di server log
         res.status(500).json({ error: 'Error fetching articles' });
     }
 };
