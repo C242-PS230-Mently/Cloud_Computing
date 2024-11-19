@@ -32,10 +32,10 @@ export const getUsers = async (req, res) => {
 
 // Register a new user
 export const Register = async (req, res) => {
-    const { full_name,age,gender, email,username, password, confpassword } = req.body;
+    const { full_name,age,gender, email,username, password } = req.body;
 
     
-    const { error } = joiRegister.validate({ full_name, age,gender, email,username, password, confpassword });
+    const { error } = joiRegister.validate({ full_name, age,gender, email,username, password });
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {

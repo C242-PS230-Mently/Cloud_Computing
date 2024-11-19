@@ -34,10 +34,6 @@ export const joiRegister = Joi.object({
         'string.empty': 'Password is required',
         'string.min': 'Password should have at least 6 characters'
     }),
-    confpassword: Joi.string().valid(Joi.ref('password')).required()
-    .messages({
-        'any.only': 'Password and confirm password do not match',
-    }),
 });
 
 export const joiLogin = Joi.object({
