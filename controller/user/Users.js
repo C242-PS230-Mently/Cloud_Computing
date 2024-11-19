@@ -12,9 +12,12 @@ const upload = multer({ storage: multerStorage });
 // dashboard
 export const getDashboardById = (req, res) => {
     const { user } = req;
+    const greetMessage = `Hai,${user.username}!`
     return res.status(200).json({
         msg: 'Dashboard data',
+        greet: greetMessage,
         userId: user.id,
+        username: user.username,
         fullName: user.full_name,
         email: user.email,
     });
@@ -129,18 +132,27 @@ export const updatePhoto = async (req, res) => {
 };
 
 export const getprofileById = async (req, res) => {
-  const userId = req.params.userId;
+  try {
+    const userId = req.params.id; // Ambil parameter ID dari URL
+    console.log('User ID:', userId); // Debugging, pastikan ID diterima
 
-  const user = await User.findByPk(userId);
+    // Query ke database menggunakan Sequelize
+    const user = await User.findByPk(userId);
 
-  if (!user || !user.profile_photo) {
-    return res.status(404).send('Profile photo not found.');
+    // Jika user tidak ditemukan atau tidak memiliki profile photo
+    if (!user || !user.profile_photo) {
+      return res.status(404).send({ message: 'Profile photo not found.' });
+    }
+
+    // Jika ditemukan, kirimkan response
+    res.status(200).send({
+      message: 'Profile photo found',
+      url: user.profile_photo,
+    });
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    res.status(500).send({ message: 'Internal server error.' });
   }
-
-  res.status(200).send({
-    message: 'Profile photo found',
-    url: user.profile_photo,
-  });
 };
 
 

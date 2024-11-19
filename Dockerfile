@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy the rest of the application code
-COPY . .
+COPY .env .env
 
 # Expose port 8080 for Cloud Run (which uses this port by default)
 EXPOSE 8000

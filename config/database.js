@@ -11,6 +11,11 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
     dialect: "mysql",
 });
 
+console.log('DB_HOST:', dbHost);
+console.log('DB_USER:', dbUser);
+console.log('DB_PASS:', dbPass);
+console.log('DB_NAME:', dbName);
+
 
 // Table name
 

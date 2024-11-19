@@ -28,17 +28,17 @@ router.post('/user/responses', saveUserResponse);
 // Dasboard
 router.get('/user/articles', getArticles);
 router.get('/user/articles/', getArticleById);
-router.post('/user/articles', createArticle);
-router.get('/user/dashboard/',getDashboardById);
+// router.post('/user/articles', createArticle);
+router.get('/user/dashboard/',checkAuth,getDashboardById,getNotifications);
 
 //update profile
-router.get('/user/getphoto',getprofileById);
+router.get('/user/getphoto/:id',getprofileById);
 router.post('/user/upload',updatePhoto);
 router.put('/user/editprofile',checkAuth,editProfile);
 
 //notif 
-router.get('/user/getNotif',checkAuth,getNotifications);
-router.post('/user/notif',checkAuth,createNotification);
+// router.get('/user/getNotif',checkAuth,getNotifications);
+// router.post('/user/notif',checkAuth,createNotification);
 
 // auth
 router.post('/auth/register', Register);
