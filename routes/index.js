@@ -32,7 +32,7 @@ router.get('/user/articles/', getArticleById);
 router.get('/user/dashboard/',checkAuth,getDashboardById,getNotifications);
 
 //update profile
-router.get('/user/getphoto/:id',getprofileById);
+router.get('/user/photo/:id',getprofileById);
 router.post('/user/upload',updatePhoto);
 router.put('/user/editprofile',checkAuth,editProfile);
 
