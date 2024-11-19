@@ -8,9 +8,9 @@ import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
 import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile } from "../controller/user/Users.js";
-import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
+// import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
 import { createArticle, getArticles, getArticleById } from "../controller/Dasboard/routeDasboard.js";
-import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
+// import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
 
 const router = express.Router();
 
