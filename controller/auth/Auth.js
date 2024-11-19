@@ -1,9 +1,10 @@
-import { User } from "../models/UserModel.js";
+import { User } from "../../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nanoid } from 'nanoid';
-import { createNotification } from "./user/Users.js";
+import { createNotification } from "../user/Users.js";
 import { joiLogin,joiRegister } from "./validator.js";
+import { Op } from "sequelize";
 
 
 const generateAccessToken = (user) => {
@@ -30,18 +31,23 @@ export const getUsers = async (req, res) => {
 
 // Register a new user
 export const Register = async (req, res) => {
-    const { full_name,age,gender, email, password, confpassword } = req.body;
+    const { full_name,age,gender, email,username, password, confpassword } = req.body;
 
     
-    const { error } = joiRegister.validate({ full_name, age,gender, email, password, confpassword });
+    const { error } = joiRegister.validate({ full_name, age,gender, email,username, password, confpassword });
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {
         
-        const existUser = await User.findOne({ where: { email } });
-        if (existUser) {
+        const existMail = await User.findOne({ where: { email } });
+        if (existMail) {
             return res.status(400).json({ msg: 'Email is already registered' });
         }
+        const existUser = await User.findOne({ where: { username } });
+        if (existUser) {
+            return res.status(400).json({ msg: 'Username is already registered' });
+        }
+
 
         // nanoid
         const id = nanoid(21);
@@ -51,10 +57,12 @@ export const Register = async (req, res) => {
         const hashPassword = await bcrypt.hash(password, salt);
 
         await User.create({
+            
             id: id,
             full_name: full_name,
             age: age,
             gender: gender,
+            username: username,
             email: email,
             password: hashPassword
         });
@@ -68,22 +76,30 @@ export const Register = async (req, res) => {
 
 // Login function
 export const Login = async (req, res) => {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
-    const { error } = joiLogin.validate({ email, password });
+    const { error } = joiLogin.validate({ identifier, password });
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ 
+            where: { 
+                [Op.or]: [
+                    {email: identifier},
+                    {username: identifier}
+                ]
+             }
+        });
+
         if (!user) {
-            return res.status(400).json({ msg: 'Email is not registered' });
+            return res.status(400).json({ msg: 'Email or username is not registered' });
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(400).json({ msg: 'Email or password is incorrect' });
         }
-
+      
         const accessToken = generateAccessToken(user);
         
        
@@ -92,8 +108,8 @@ export const Login = async (req, res) => {
 
         await createNotification({
             user_id: user.id,
-            notif_type: 'Welcome to Mently', // you can define this type based on your needs
-            notif_content: "Let’s make today a good day. Small steps add up, and we’re here with you every step of the way.",
+            notif_type: 'Selamat Datang di Mently ', 
+            notif_content: "Yuk, mulai perjalanan untuk mengenal dan menerima dirimu lebih baik bersama Mently .Kami ada untuk menemanimu, mendukungmu, dan membantu kamu menemukan versi terbaik dari dirimu.",
             is_read: 0, // unread
             createdAt: new Date(),
             updatedAt: new Date()
@@ -111,7 +127,7 @@ export const Login = async (req, res) => {
 
 // Logout function
 export const Logout = async (req, res) => {
-    const { id } = req.body; // Get the user ID from the request body
+    const { id } = req.body; 
 
     if (!id) {
         return res.status(400).json({ msg: 'User ID is required for logout' });
@@ -120,7 +136,7 @@ export const Logout = async (req, res) => {
     try {
         console.log("Logging out user ID:", id);
 
-        // Find the user by the ID provided in the request body
+       
         const user = await User.findByPk(id);
 
         if (!user) {
@@ -128,7 +144,7 @@ export const Logout = async (req, res) => {
             return res.status(400).json({ msg: 'User not found' });
         }
 
-        // Clear the token in the database to log the user out
+        
         user.token = null;
         await user.save();
 
