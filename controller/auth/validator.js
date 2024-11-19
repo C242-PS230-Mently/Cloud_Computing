@@ -15,6 +15,11 @@ export const joiRegister = Joi.object({
         'string.empty': 'Email is required',
         'string.email': 'Please enter a valid email address'
     }),
+    username: Joi.string().min(3).max(50).required().messages({
+        'string.empty': 'Username is required',
+        'string.min': 'Username must have at least 3 characters',
+        'string.max': 'Username must not exceed 50 characters'
+    }),
     age: Joi.number().integer().required()
     .messages({
         'number.base': 'Please enter a valid number for age',
@@ -36,14 +41,11 @@ export const joiRegister = Joi.object({
 });
 
 export const joiLogin = Joi.object({
-    email: Joi.string().email().required()
-    .messages({
-        'string.empty': 'Email is required',
-        'string.email': 'Please enter a valid email address'
+    identifier: Joi.string().required().messages({
+        'string.empty': 'Email or username is required',
     }),
-    password: Joi.string().min(6).required()
-    .messages({
+    password: Joi.string().min(6).required().messages({
         'string.empty': 'Password is required',
-        'string.min': 'Password should have at least 6 characters'
+        'string.min': 'Password should have at least 6 characters',
     }),
 });
