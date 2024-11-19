@@ -1,20 +1,30 @@
-# Use the official Node.js 18 image as a base
-FROM node:18
+# Menggunakan Node.js versi 16 sebagai base image
+FROM node:20
 
-# Set the working directory inside the container
+# Menetapkan direktori kerja di dalam kontainer
 WORKDIR /app
 
-# Copy the package.json and package-lock.json files
+# Menyalin file package.json dan package-lock.json untuk instalasi dependencies
 COPY package*.json ./
 
-# Install dependencies
+COPY .env .env
+# Menginstall dependencies
 RUN npm install
 
-# Copy the rest of the application code
+# Menyalin seluruh kode aplikasi ke dalam kontainer
+COPY . .
+
 COPY .env .env
 
-# Expose port 8080 for Cloud Run (which uses this port by default)
+# Menetapkan variabel lingkungan di Docker
+ENV APP_ENV=development
+ENV APP_PORT=8000
+
 EXPOSE 8000
 
-# Start the application using npm start
-CMD ["npm", "start"]
+
+# Menjalankan aplikasi
+CMD [ "npm", "start" ]
+
+# Mengekspos port yang akan digunakan aplikasi
+
