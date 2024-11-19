@@ -85,10 +85,10 @@ export const Login = async (req, res) => {
         const user = await User.findOne({ 
             where: { 
                 [Op.or]: [
-                    {email: identifier},
-                    {username: identifier}
+                    { email: identifier },
+                    { username: identifier }
                 ]
-             }
+            }
         });
 
         if (!user) {
@@ -102,21 +102,29 @@ export const Login = async (req, res) => {
       
         const accessToken = generateAccessToken(user);
         
-       
         user.token = accessToken;
         await user.save();
 
-        await createNotification({
-            user_id: user.id,
-            notif_type: 'Selamat Datang di Mently ', 
-            notif_content: "Yuk, mulai perjalanan untuk mengenal dan menerima dirimu lebih baik bersama Mently .Kami ada untuk menemanimu, mendukungmu, dan membantu kamu menemukan versi terbaik dari dirimu.",
-            is_read: 0, // unread
-            createdAt: new Date(),
-            updatedAt: new Date()
+        // Cek apakah notifikasi welcome sudah ada untuk pengguna ini
+        const existingNotification = await Notification.findOne({
+            where: {
+                user_id: user.id,
+                notif_type: 'Selamat Datang di Mently' // tipe notifikasi unik
+            }
         });
 
+        // Jika notifikasi belum ada, buat baru
+        if (!existingNotification) {
+            await createNotification({
+                user_id: user.id,
+                notif_type: 'Selamat Datang di Mently', 
+                notif_content: "Yuk, mulai perjalanan untuk mengenal dan menerima dirimu lebih baik bersama Mently. Kami ada untuk menemanimu, mendukungmu, dan membantu kamu menemukan versi terbaik dari dirimu.",
+                is_read: 0, // unread
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+        }
 
-       
         return res.status(200).json({ accessToken });
     } catch (error) {
         console.error(error);
