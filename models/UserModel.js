@@ -1,9 +1,10 @@
-import { Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes,Op } from "sequelize";
 import sequelize from "../config/database.js";
 
 export const User = sequelize.define("User", {
     id: { type: DataTypes.STRING, primaryKey: true },
     full_name: { type: DataTypes.STRING, allowNull: false },
+    username: {type: DataTypes.STRING,allowNull: false},
     email: { type: DataTypes.STRING, unique: true, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     token: { type: DataTypes.STRING },

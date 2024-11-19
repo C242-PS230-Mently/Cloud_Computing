@@ -1,4 +1,4 @@
-import { User, UserOtp } from "../models/UserModel.js";
+import { User, UserOtp } from "../../models/UserModel.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import nodemailer from "nodemailer";
