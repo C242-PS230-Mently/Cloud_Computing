@@ -1,9 +1,9 @@
 import express from "express";
-import { getUsers, Login, Register, Logout } from "../controller/Users.js"; 
+import { getUsers, Login, Register, Logout } from "../controller/auth/Auth.js"; 
 import checkAuth from "../middleware/checkAuth.js";
 import { verifyRefreshToken,verifyToken } from "../middleware/refreshToken.js";
 import jwt from "jsonwebtoken";
-import { requestPasswordReset,resetPassword } from "../controller/forgotPass.js";
+import { requestPasswordReset,resetPassword } from "../controller/auth/forgotPass.js";
 import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
