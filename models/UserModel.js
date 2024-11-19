@@ -9,6 +9,7 @@ export const User = sequelize.define("User", {
     password: { type: DataTypes.STRING, allowNull: false },
     token: { type: DataTypes.STRING },
     profile_photo: { type: DataTypes.STRING },
+
     gender: {type: DataTypes.ENUM('Laki Laki','Perempuan')},
     age: { type: DataTypes.INTEGER },
     gender: {type: DataTypes.ENUM('Laki Laki','Perempuan')},
@@ -68,7 +69,7 @@ export const UserHistory = sequelize.define("UserHistory", {
 
 // model dasboard
 export const Article = sequelize.define('Article', {
-    id: {type: DataTypes.STRING,primaryKey: true,allowNull: false},
+    id: {type: DataTypes.INTEGER,primaryKey: true, autoIncrement: true, allowNull: false},
     title: {type: DataTypes.STRING,allowNull: false},
     publisher: {type: DataTypes.STRING,allowNull: true},
     image_url: {type: DataTypes.STRING,allowNull: true},
