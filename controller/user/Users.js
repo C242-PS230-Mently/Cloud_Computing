@@ -162,19 +162,19 @@ export const editProfile = async (req, res) => {
     // req.user is already populated by the middleware
     const user = req.user;
 
-    const { full_name, email, password, gender, age } = req.body;
+    const { full_name, email,username, gender, age } = req.body;
 
     // Update user data
     user.full_name = full_name || user.full_name;
+    user.username = username || user.username;
     user.email = email || user.email;
-    user.password = password ? await bcrypt.hash(password, 10) : user.password;
     user.gender = gender || user.gender;
     user.age = age || user.age;
 
     // Save changes
     await user.save();
 
-    res.json({ message: 'Profile updated successfully', user });
+    res.status(200).json({ message: 'Profile updated successfully', user });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Something went wrong' });

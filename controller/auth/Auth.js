@@ -1,10 +1,11 @@
-import { User } from "../../models/UserModel.js";
+import { User,UserNotif } from "../../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nanoid } from 'nanoid';
 import { createNotification } from "../user/Users.js";
 import { joiLogin,joiRegister } from "./validator.js";
 import { Op } from "sequelize";
+
 
 
 const generateAccessToken = (user) => {
@@ -82,8 +83,8 @@ export const Login = async (req, res) => {
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {
-        const user = await User.findOne({ 
-            where: { 
+        const user = await User.findOne({
+            where: {
                 [Op.or]: [
                     { email: identifier },
                     { username: identifier }
@@ -99,38 +100,41 @@ export const Login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({ msg: 'Email or password is incorrect' });
         }
-      
+
         const accessToken = generateAccessToken(user);
-        
+
         user.token = accessToken;
         await user.save();
 
         // Cek apakah notifikasi welcome sudah ada untuk pengguna ini
-        const existingNotification = await Notification.findOne({
+        const existingNotification = await UserNotif.findOne({
             where: {
                 user_id: user.id,
-                notif_type: 'Selamat Datang di Mently' // tipe notifikasi unik
+                notif_type: 'Selamat Datang di Mently'
             }
         });
 
-        // Jika notifikasi belum ada, buat baru
+        let newNotification = existingNotification
         if (!existingNotification) {
-            await createNotification({
+            newNotification = await UserNotif.create({
+                notif_id: nanoid(21), // ID unik
                 user_id: user.id,
-                notif_type: 'Selamat Datang di Mently', 
-                notif_content: "Yuk, mulai perjalanan untuk mengenal dan menerima dirimu lebih baik bersama Mently. Kami ada untuk menemanimu, mendukungmu, dan membantu kamu menemukan versi terbaik dari dirimu.",
-                is_read: 0, // unread
+                notif_type: 'Selamat Datang di Mently',
+                notif_content: "Yuk, mulai perjalanan untuk mengenal dan menerima dirimu lebih baik bersama Mently...",
+                is_read: 0,
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
+            console.log("New Notification Created:", newNotification);
         }
 
-        return res.status(200).json({ accessToken });
+        return res.status(200).json({ accessToken,newNotification });
     } catch (error) {
-        console.error(error);
+        console.error("Error in Login:", error);
         return res.status(500).json({ msg: 'Internal server error' });
     }
 };
+
 
 
 // Logout function
