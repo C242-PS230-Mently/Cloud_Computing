@@ -21,7 +21,6 @@ export const UserOtp = sequelize.define("UserOtp", {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     email: { type: DataTypes.STRING, allowNull: false },
     otp: { type: DataTypes.STRING, allowNull: true },
-    reset_token: { type: DataTypes.STRING, allowNull: false },
     createdAt: { type: DataTypes.DATE, defaultValue: Sequelize.NOW },
 }, {
     tableName: "user_otp",
@@ -42,9 +41,12 @@ export const UserNotif = sequelize.define("UserNotif", {
 export const Question = sequelize.define("Question", {
     question_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     question_text: { type: DataTypes.TEXT, allowNull: false },
+    diagnose_id: { type: DataTypes.INTEGER, allowNull: true },
 }, {
     tableName: "question",
+    timestamps: false,
 });
+
 
 export const UserResponse = sequelize.define("UserResponse", {
     response_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
