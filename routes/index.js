@@ -40,8 +40,8 @@ router.post('/user/upload',checkAuth,updatePhoto);
 router.put('/user/editprofile',checkAuth,editProfile);
 router.put('/user/changepass',checkAuth,changePassword);
 
-//notif 
-// router.get('/user/getNotif',checkAuth,getNotifications);
+
+router.get('/user/notif',checkAuth,getNotifications);
 // router.post('/user/notif',checkAuth,createNotification);
 
 // auth
