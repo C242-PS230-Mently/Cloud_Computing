@@ -47,7 +47,7 @@ router.put('/user/changepass',checkAuth,changePassword);
 // auth
 router.post('/auth/register', Register);
 router.post('/auth/login',Login);
-router.post('/auth/logout', Logout);
+router.post('/auth/logout',checkAuth, Logout);
 router.post('/auth/forgot-password', requestPasswordReset);
 router.post('/auth/reset-password', resetPassword);
 

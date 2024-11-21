@@ -128,7 +128,7 @@ export const Login = async (req, res) => {
             console.log("New Notification Created:", newNotification);
         }
 
-        return res.status(200).json({ accessToken,newNotification });
+        return res.status(200).json({ accessToken });
     } catch (error) {
         console.error("Error in Login:", error);
         return res.status(500).json({ msg: 'Internal server error' });
@@ -139,24 +139,13 @@ export const Login = async (req, res) => {
 
 // Logout function
 export const Logout = async (req, res) => {
-    const { id } = req.body; 
-
-    if (!id) {
-        return res.status(400).json({ msg: 'User ID is required for logout' });
-    }
-
     try {
-        console.log("Logging out user ID:", id);
+        // Ambil user dari middleware checkAuth
+        const user = req.user;
 
-       
-        const user = await User.findByPk(id);
+        console.log("Logging out user ID:", user.id);
 
-        if (!user) {
-            console.log("User not found for ID:", id);
-            return res.status(400).json({ msg: 'User not found' });
-        }
-
-        
+        // Nullify the token in the database to logout the user
         user.token = null;
         await user.save();
 
