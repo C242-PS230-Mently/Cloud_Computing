@@ -4,14 +4,16 @@ import multer from 'multer';
 import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import { editPass, joiEdit } from "../auth/validator.js";
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
 
 
 
+
 // dashboard
 export const getDashboardById = (req, res) => {
-  
+
     const { user } = req;
     const greetMessage = `Hai,${user.username}!`
     return res.status(200).json({
@@ -170,6 +172,9 @@ export const editProfile = async (req, res) => {
 
     const { full_name, email,username, gender, age } = req.body;
 
+    const { error } = joiEdit.validate({ full_name, age,gender, email,username});
+    if (error) return res.status(400).json({ msg: error.details[0].message });
+
     // Update user data
     user.full_name = full_name || user.full_name;
     user.username = username || user.username;
@@ -180,7 +185,16 @@ export const editProfile = async (req, res) => {
     // Save changes
     await user.save();
 
-    res.status(200).json({ message: 'Profile updated successfully', user });
+    const userEdit = {
+      id: user.id,
+      full_name: user.full_name,
+      email: user.email,
+      username: user.username,
+      gender: user.gender,
+      age: user.age
+    }
+
+    res.status(200).json({ message: 'Profile updated successfully', data: userEdit });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Something went wrong' });
@@ -193,10 +207,8 @@ export const changePassword = async (req,res) =>{
     const user = req.user
     const {password} = req.body;
 
-    if(!password){
-      return res.status(400).json({message: "Password is required"});
-      
-    }
+    const { error } = editPass.validate({ password});
+    if (error) return res.status(400).json({ msg: error.details[0].message });
 
     const salt = await bcrypt.genSalt(10);
     const hashPassword =await bcrypt.hash(password,salt)
@@ -208,7 +220,8 @@ export const changePassword = async (req,res) =>{
     return res.status(200).json({ message: "Password updated successfully" });
 
   } catch (error) {
-    
+        console.error("Error changing password:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
