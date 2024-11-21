@@ -1,8 +1,8 @@
-import { User,UserNotif } from "../../models/UserModel.js";
+import { User } from "../../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { nanoid } from 'nanoid';
-import { createNotification } from "../user/Users.js";
+import { createWelcomeNotification } from "../user/notif.js";
 import { joiLogin,joiRegister } from "./validator.js";
 import { Op } from "sequelize";
 
@@ -57,7 +57,7 @@ export const Register = async (req, res) => {
         const salt = await bcrypt.genSalt();
         const hashPassword = await bcrypt.hash(password, salt);
 
-        await User.create({
+        const newUser = await User.create({
             
             id: id,
             full_name: full_name,
@@ -68,7 +68,17 @@ export const Register = async (req, res) => {
             password: hashPassword
         });
 
-        res.json({ msg: "Registration successful" });
+        return res.status(201).json({
+            msg: "Registration successful",
+            user: {
+                id: newUser.id,
+                full_name: newUser.full_name,
+                age: newUser.age,
+                gender: newUser.gender,
+                username: newUser.username,
+                email: newUser.email
+            }
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Internal server error' });
@@ -79,10 +89,12 @@ export const Register = async (req, res) => {
 export const Login = async (req, res) => {
     const { identifier, password } = req.body;
 
+    // Validate request payload
     const { error } = joiLogin.validate({ identifier, password });
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {
+        // Find user by email or username
         const user = await User.findOne({
             where: {
                 [Op.or]: [
@@ -96,39 +108,34 @@ export const Login = async (req, res) => {
             return res.status(400).json({ msg: 'Email or username is not registered' });
         }
 
+        // Validate password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(400).json({ msg: 'Email or password is incorrect' });
         }
 
+        // Generate access token
         const accessToken = generateAccessToken(user);
 
+        // Update user token in the database
         user.token = accessToken;
         await user.save();
 
-        // Cek apakah notifikasi welcome sudah ada untuk pengguna ini
-        const existingNotification = await UserNotif.findOne({
-            where: {
-                user_id: user.id,
-                notif_type: 'Selamat Datang di Mently'
+        // Create welcome notification (if not already created)
+        await createWelcomeNotification(user.id);
+
+        // Return detailed response
+        return res.status(200).json({
+            msg: 'Login successful',
+            accessToken: accessToken,
+            user: {
+                id: user.id,
+                fullName: user.full_name,
+                username: user.username,
+                email: user.email,
+                
             }
         });
-
-        let newNotification = existingNotification
-        if (!existingNotification) {
-            newNotification = await UserNotif.create({
-                notif_id: nanoid(21), // ID unik
-                user_id: user.id,
-                notif_type: 'Selamat Datang di Mently',
-                notif_content: "Yuk, mulai perjalanan untuk mengenal dan menerima dirimu lebih baik bersama Mently...",
-                is_read: 0,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            });
-            console.log("New Notification Created:", newNotification);
-        }
-
-        return res.status(200).json({ accessToken });
     } catch (error) {
         console.error("Error in Login:", error);
         return res.status(500).json({ msg: 'Internal server error' });
