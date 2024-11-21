@@ -15,6 +15,9 @@ import { createNotification,getNotifications, getDashboardById,updatePhoto,getpr
 const router = express.Router();
 
 //get all users
+router.get('/', (req,res) => {
+    res.redirect('https://storage.googleapis.com/mently-bucket/gif/twittervid.com_hamukukka_123938.gif');
+});
 router.get('/users', getUsers);
 
 //history : tunggu model ml
