@@ -172,6 +172,15 @@ export const editProfile = async (req, res) => {
 
     const { full_name, email,username, gender, age } = req.body;
 
+    const existMail = await User.findOne({ where: { email } });
+    if (existMail) {
+        return res.status(400).json({ msg: 'Email is already exist' });
+    }
+    const existUser = await User.findOne({ where: { username } });
+    if (existUser) {
+        return res.status(400).json({ msg: 'Username is already exist' });
+    }
+
     const { error } = joiEdit.validate({ full_name, age,gender, email,username});
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
