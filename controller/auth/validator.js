@@ -17,7 +17,7 @@ export const joiRegister = Joi.object({
     }),
     username: Joi.string().min(6).max(50).required().messages({
         'string.empty': 'Username is required',
-        'string.min': 'Username must have at least 3 characters',
+        'string.min': 'Username must have at least 6 characters',
         'string.max': 'Username must not exceed 50 characters'
     }),
     age: Joi.number().integer().required()
@@ -29,10 +29,10 @@ export const joiRegister = Joi.object({
     .messages({
         'any.required': 'Gender is required'
     }) ,      
-    password: Joi.string().min(6).required()
+    password: Joi.string().min(8).required()
     .messages({
         'string.empty': 'Password is required',
-        'string.min': 'Password should have at least 6 characters'
+        'string.min': 'Password should have at least 8 characters'
     }),
 });
 
@@ -42,7 +42,7 @@ export const joiLogin = Joi.object({
     }),
     password: Joi.string().min(8).required().messages({
         'string.empty': 'Password is required',
-        'string.min': 'Password should have at least 6 characters',
+        'string.min': 'Password should have at least 8 characters',
     }),
 });
 
@@ -50,7 +50,7 @@ export const editPass = Joi.object({
     password: Joi.string().min(8).required()
     .messages({
         'string.empty': 'Password is required',
-        'string.min': 'Password should have at least 6 characters'
+        'string.min': 'Password should have at least 8 characters'
     }),
 })
 
@@ -71,7 +71,7 @@ export const joiEdit = Joi.object({
     }),
     username: Joi.string().min(6).max(50).required().messages({
         'string.empty': 'Username is required',
-        'string.min': 'Username must have at least 3 characters',
+        'string.min': 'Username must have at least 6 characters',
         'string.max': 'Username must not exceed 50 characters'
     }),
     age: Joi.number().integer().required()
