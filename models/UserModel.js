@@ -76,7 +76,8 @@ export const Article = sequelize.define('Article', {
     image_url: {type: DataTypes.STRING,allowNull: true},
     snippet: {type: DataTypes.TEXT,allowNull: true},
     full_article_link: {type: DataTypes.STRING,allowNull: false},
-    created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW}
+    created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW},
+    category: { type: DataTypes.ENUM('article', 'workshop'), allowNull: false },
 }, {tableName: 'articles',timestamps: false});
 
 // // model doctor (belum ada)

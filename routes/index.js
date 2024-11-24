@@ -8,7 +8,7 @@ import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
 // import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
-import { createArticle, getArticles, getArticleById } from "../controller/Dasboard/routeDasboard.js";
+import { createArticle, getAllDataByCategory } from "../controller/Dasboard/routeDasboard.js";
 // import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
 import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword } from "../controller/user/Users.js";
 
@@ -28,11 +28,14 @@ router.post('/user/history' ,saveUserHistory);
 router.get('/user/questions', getAllQuestions);
 router.post('/user/responses', saveUserResponse);
 
-// Dasboard
-router.get('/user/articles', getArticles);
-router.get('/user/articles/', getArticleById);
-// router.post('/user/articles', createArticle);
+// dasboard
 router.get('/user/dashboard/',checkAuth,getDashboardById,getNotifications);
+
+// articles
+router.post('/user/articles', createArticle); 
+router.get('/user/articles', getAllDataByCategory);
+router.get('/user/articles/:category', getAllDataByCategory);
+router.get('/user/articles/:category?/:id?', getAllDataByCategory);
 
 //update profile
 router.get('/user/photo/:id',getprofileById);
