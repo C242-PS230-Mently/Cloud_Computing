@@ -12,8 +12,6 @@ export const getHistory = async (req, res) => {
             where: { user_id: id }, 
             order: [['created_at', 'DESC']] 
         });
-
-        // Kirimkan data history ke client
         res.status(200).json({
             message: "History anda :",
             history: consultations

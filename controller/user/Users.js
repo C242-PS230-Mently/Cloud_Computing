@@ -141,18 +141,15 @@ export const updatePhoto = async (req, res) => {
 
 export const getprofileById = async (req, res) => {
   try {
-    const userId = req.params.id; // Ambil parameter ID dari URL
-    console.log('User ID:', userId); // Debugging, pastikan ID diterima
-
-    // Query ke database menggunakan Sequelize
+    const userId = req.params.id; 
+    console.log('User ID:', userId); 
     const user = await User.findByPk(userId);
 
-    // Jika user tidak ditemukan atau tidak memiliki profile photo
     if (!user || !user.profile_photo) {
       return res.status(404).send({ message: 'Profile photo not found.' });
     }
 
-    // Jika ditemukan, kirimkan response
+
     res.status(200).send({
       message: 'Profile photo found',
       url: user.profile_photo,
@@ -167,7 +164,6 @@ export const getprofileById = async (req, res) => {
 
 export const editProfile = async (req, res) => {
   try {
-    // req.user is already populated by the middleware
     const user = req.user;
 
     const { full_name, email,username, gender, age } = req.body;

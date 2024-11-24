@@ -13,11 +13,6 @@ const generateAccessToken = (user) => {
 };
 
 
-// const generateRefreshToken = (user) => {
-//     return jwt.sign({ id: user.id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-// };
-
-
 
 // Get all users
 export const getUsers = async (req, res) => {
@@ -50,10 +45,8 @@ export const Register = async (req, res) => {
         }
 
 
-        // nanoid
-        const id = nanoid(21);
 
-        // bcyrpt
+        const id = nanoid(21);
         const salt = await bcrypt.genSalt();
         const hashPassword = await bcrypt.hash(password, salt);
 
@@ -89,12 +82,10 @@ export const Register = async (req, res) => {
 export const Login = async (req, res) => {
     const { identifier, password } = req.body;
 
-    // Validate request payload
     const { error } = joiLogin.validate({ identifier, password });
     if (error) return res.status(400).json({ msg: error.details[0].message });
 
     try {
-        // Find user by email or username
         const user = await User.findOne({
             where: {
                 [Op.or]: [
@@ -107,26 +98,19 @@ export const Login = async (req, res) => {
         if (!user) {
             return res.status(400).json({ msg: 'Email or username is not registered' });
         }
-
-        // Validate password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(400).json({ msg: 'Email or password is incorrect' });
         }
-
-        // Generate access token
         const accessToken = generateAccessToken(user);
-
-        // Update user token in the database
         user.token = accessToken;
         await user.save();
 
-        // Create welcome notification (if not already created)
         await createWelcomeNotification(user.id);
 
-        // Return detailed response
+     
         return res.status(200).json({
-            msg: 'Login successful',
+            msg: 'Login Berhasil',
             accessToken: accessToken,
             user: {
                 id: user.id,
@@ -137,7 +121,7 @@ export const Login = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("Error in Login:", error);
+        console.error("Gagal Login:", error);
         return res.status(500).json({ msg: 'Internal server error' });
     }
 };
@@ -147,18 +131,15 @@ export const Login = async (req, res) => {
 // Logout function
 export const Logout = async (req, res) => {
     try {
-        // Ambil user dari middleware checkAuth
         const user = req.user;
 
         console.log("Logging out user ID:", user.id);
-
-        // Nullify the token in the database to logout the user
         user.token = null;
         await user.save();
 
-        res.status(200).json({ msg: 'Logged out successfully' });
+        res.status(200).json({ msg: 'Logout Berhasil' });
     } catch (error) {
-        console.error("Error during logout:", error);
+        console.error("Gagal Logout", error);
         res.status(500).json({ msg: 'Internal server error' });
     }
 };

@@ -1,7 +1,7 @@
 import { UserResponse, Question } from "../../models/UserModel.js";
 import { nanoid } from 'nanoid';
 
-// Save User Response
+
 export const saveUserResponse = async (req, res) => {
     const { userId, questionId, optionId } = req.body;
     try {
