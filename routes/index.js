@@ -7,7 +7,7 @@ import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { getHistory } from "../controller/consult/history.js";
 // import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
-import { createArticle, getArticles, getArticleById } from "../controller/Dasboard/routeDasboard.js";
+import { createArticle, getArticles, getArticleById } from "../controller/Dashboard/routeDasboard.js";
 // import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
 import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword } from "../controller/user/Users.js";
 
