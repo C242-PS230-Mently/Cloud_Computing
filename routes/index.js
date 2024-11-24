@@ -6,11 +6,13 @@ import jwt from "jsonwebtoken";
 import { requestPasswordReset,resetPassword } from "../controller/auth/forgotPass.js";
 import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
-import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
+import { getHistory } from "../controller/consult/history.js";
 // import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
 import { createArticle, getArticles, getArticleById } from "../controller/Dasboard/routeDasboard.js";
 // import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
 import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword } from "../controller/user/Users.js";
+import axios from 'axios';
+import { fetchApi } from "../controller/consult/consult.js";
 
 const router = express.Router();
 
@@ -21,8 +23,8 @@ router.get('/', (req,res) => {
 router.get('/users', getUsers);
 
 //history : tunggu model ml
-router.get('/user/gethistory',getUserHistory);
-router.post('/user/history' ,saveUserHistory);
+// router.get('/user/gethistory',getUserHistory);
+router.get('/user/history' ,checkAuth,getHistory);
 
 //konsul
 router.get('/user/questions', getAllQuestions);
@@ -42,7 +44,9 @@ router.put('/user/changepass',checkAuth,changePassword);
 
 
 router.get('/user/notif',checkAuth,getNotifications);
-// router.post('/user/notif',checkAuth,createNotification);
+
+router.post('/predict',checkAuth,fetchApi)
+
 
 // auth
 router.post('/auth/register', Register);
