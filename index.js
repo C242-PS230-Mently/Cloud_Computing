@@ -2,7 +2,7 @@ import express from "express";
 import router from "./routes/index.js";
 import dotenv from 'dotenv';
 import sequelize from "./config/database.js";
-
+import axios from 'axios';
 dotenv.config();
 const PORT = process.env.PORT;
 
