@@ -31,7 +31,7 @@ export const getArticles = async (req, res) => {
             articles: articles
         });
     } catch (error) {
-        console.error('Error fetching articles:', error);  // Menampilkan error di server log
+        console.error('Error fetching articles:', error);  
         res.status(500).json({ error: 'Error fetching articles' });
     }
 };

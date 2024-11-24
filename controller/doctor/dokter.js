@@ -36,7 +36,7 @@ export const getDoctors = async (req, res) => {
 // GET: Mengambil data dokter berdasarkan ID
 export const getDoctorById = async (req, res) => {
     try {
-        const { id } = req.params;  // Mengambil ID dari URL
+        const { id } = req.params;  
         const doctor = await Doctor.findOne({ where: { id } }); 
 
         if (!doctor) {
