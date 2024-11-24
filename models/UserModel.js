@@ -41,7 +41,7 @@ export const UserNotif = sequelize.define("UserNotif", {
 export const Question = sequelize.define("Question", {
     question_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     question_text: { type: DataTypes.TEXT, allowNull: false },
-    diagnose_id: { type: DataTypes.INTEGER, allowNull: true },
+    disorders_id: { type: DataTypes.INTEGER, allowNull: true },
 }, {
     tableName: "question",
     timestamps: false,
@@ -79,6 +79,16 @@ export const Article = sequelize.define('Article', {
     created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW}
 }, {tableName: 'articles',timestamps: false});
 
+
+export const Consultation = sequelize.define('Consultation', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
+    user_id: {type: DataTypes.STRING(255), allowNull: false, references: {model: User, key: 'id'}, onDelete: 'CASCADE', onUpdate: 'CASCADE'},
+    predictions: {type: DataTypes.JSON, allowNull: false},
+    created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW}
+}, {tableName: 'consultations', timestamps: false});
+// export const Solution = sequelize.define('solutions',{
+//     id: {type: DataTypes.}
+// })
 // // model doctor (belum ada)
 // export const Doctor = sequelize.define('Doctor', {
 //     id: {type: DataTypes.STRING, primaryKey: true, allowNull: false},
