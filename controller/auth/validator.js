@@ -4,83 +4,83 @@ export const joiRegister = Joi.object({
     full_name: Joi.string().min(5).required()
     .pattern(/^[A-Za-z\s]+$/)
     .messages({
-        'string.pattern.base': 'Please enter a valid name   ', 
-        'string.empty': 'Full name is required',
-        'string.min': 'Full name should have at least 5 characters'
-        
-        
+        'string.pattern.base': 'Nama lengkap harus berupa huruf dan spasi yang valid', 
+        'string.empty': 'Nama lengkap wajib diisi',
+        'string.min': 'Nama lengkap harus memiliki setidaknya 5 karakter'
     }),
     email: Joi.string().email().required()
     .messages({
-        'string.empty': 'Email is required',
-        'string.email': 'Please enter a valid email address'
+        'string.empty': 'Email wajib diisi',
+        'string.email': 'Masukkan alamat email yang valid'
     }),
-    username: Joi.string().min(6).max(50).required().messages({
-        'string.empty': 'Username is required',
-        'string.min': 'Username must have at least 3 characters',
-        'string.max': 'Username must not exceed 50 characters'
+    username: Joi.string().min(6).max(50).trim().required()
+    .pattern(/^\S+$/)
+    .messages({
+        'string.pattern.base':'Username tidak boleh mengandung Spasi',
+        'string.empty': 'Username wajib diisi',
+        'string.min': 'Username harus memiliki setidaknya 6 karakter',
+        'string.max': 'Username tidak boleh lebih dari 50 karakter'
     }),
     age: Joi.number().integer().required()
     .messages({
-        'number.base': 'Please enter a valid number for age',
-        'any.required': 'Please enter your age'
-    }) ,
-    gender: Joi.string().valid('Laki Laki','Perempuan').required()
+        'number.base': 'Umur harus berupa angka yang valid',
+        'any.required': 'Umur wajib diisi'
+    }),
+    gender: Joi.string().valid('Laki Laki', 'Perempuan').required()
     .messages({
-        'any.required': 'Gender is required'
-    }) ,      
-    password: Joi.string().min(6).required()
+        'any.required': 'Jenis kelamin wajib diisi'
+    }),
+    password: Joi.string().min(8).required()
     .messages({
-        'string.empty': 'Password is required',
-        'string.min': 'Password should have at least 6 characters'
+        'string.empty': 'Kata sandi wajib diisi',
+        'string.min': 'Kata sandi harus memiliki setidaknya 8 karakter'
     }),
 });
 
 export const joiLogin = Joi.object({
     identifier: Joi.string().required().messages({
-        'string.empty': 'Email or username is required',
+        'string.empty': 'Email atau username wajib diisi',
     }),
     password: Joi.string().min(8).required().messages({
-        'string.empty': 'Password is required',
-        'string.min': 'Password should have at least 6 characters',
+        'string.empty': 'Kata sandi wajib diisi',
+        'string.min': 'Kata sandi harus memiliki setidaknya 8 karakter',
     }),
 });
 
 export const editPass = Joi.object({
     password: Joi.string().min(8).required()
     .messages({
-        'string.empty': 'Password is required',
-        'string.min': 'Password should have at least 6 characters'
+        'string.empty': 'Kata sandi wajib diisi',
+        'string.min': 'Kata sandi harus memiliki setidaknya 8 karakter'
     }),
-})
+});
 
 export const joiEdit = Joi.object({
     full_name: Joi.string().min(5).required()
     .pattern(/^[A-Za-z\s]+$/)
     .messages({
-        'string.pattern.base': 'Please enter a valid name   ', 
-        'string.empty': 'Full name is required',
-        'string.min': 'Full name should have at least 5 characters'
-        
-        
+        'string.pattern.base': 'Nama lengkap harus berupa huruf dan spasi yang valid', 
+        'string.empty': 'Nama lengkap wajib diisi',
+        'string.min': 'Nama lengkap harus memiliki setidaknya 5 karakter'
     }),
     email: Joi.string().email().required()
     .messages({
-        'string.empty': 'Email is required',
-        'string.email': 'Please enter a valid email address'
+        'string.empty': 'Email wajib diisi',
+        'string.email': 'Masukkan alamat email yang valid'
     }),
     username: Joi.string().min(6).max(50).required().messages({
-        'string.empty': 'Username is required',
-        'string.min': 'Username must have at least 3 characters',
-        'string.max': 'Username must not exceed 50 characters'
+        'string.empty': 'Username wajib diisi',
+        'string.min': 'Username harus memiliki setidaknya 6 karakter',
+        'string.max': 'Username tidak boleh lebih dari 50 karakter'
     }),
     age: Joi.number().integer().required()
     .messages({
-        'number.base': 'Please enter a valid number for age',
-        'any.required': 'Please enter your age'
-    }) ,
-    gender: Joi.string().valid('Laki Laki','Perempuan').required()
+        'number.base': 'Umur harus berupa angka yang valid',
+        'any.required': 'Umur wajib diisi'
+    }),
+    gender: Joi.string().valid('Laki Laki', 'Perempuan').required()
     .messages({
-        'any.required': 'Gender is required'
-    }) ,      
+        'any.required': 'Jenis kelamin wajib diisi'
+    }),
 });
+

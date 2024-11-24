@@ -35,18 +35,18 @@ export const getNotifications = async (req, res) => {
     }
 
     try {
-        // Fetch notifications for the logged-in user
+    
         const notifications = await UserNotif.findAll({
             where: { user_id: user.id },
             order: [['createdAt', 'DESC']]
         });
 
-        // Check if there are no notifications
+        
         if (notifications.length === 0) {
             return res.status(404).json({ msg: 'No notifications found for this user.' });
         }
 
-        // Return the notifications if they exist
+        
         res.status(200).json(notifications);
     } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -57,7 +57,7 @@ export const getNotifications = async (req, res) => {
 export const createNotification = async ({ user_id, notif_type, notif_content, is_read, createdAt, updatedAt }) => {
     try {
         await UserNotif.create({
-            notif_id: nanoid(21), // Generate unique ID
+            notif_id: nanoid(21), 
             user_id,
             notif_type,
             notif_content,
@@ -71,12 +71,6 @@ export const createNotification = async ({ user_id, notif_type, notif_content, i
 };
 
 
-
-
-
-
-
-
 const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT,
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -84,8 +78,6 @@ const storage = new Storage({
 const bucket = storage.bucket(process.env.GCLOUD_BUCKET);
 
 
-
-// Route to upload a profile photo
 export const updatePhoto = async (req, res) => {
   upload.single('file')(req, res, async (err) => {
     if (err) {
@@ -96,10 +88,10 @@ export const updatePhoto = async (req, res) => {
       return res.status(400).send('No file uploaded.');
     }
 
-    // User information should be available in req.user after checkAuth middleware
-    const user = req.user;  // Directly access user from req.user (populated by checkAuth)
+    
+    const user = req.user;  
 
-    const userId = user.id;  // Access user ID from the authenticated user object
+    const userId = user.id;  
 
     if (!userId) {
       return res.status(400).send('User ID is required.');
@@ -115,7 +107,6 @@ export const updatePhoto = async (req, res) => {
       blobStream.on('finish', async () => {
         const publicUrl = `https://storage.googleapis.com/${process.env.GCLOUD_BUCKET}/${blob.name}`;
 
-        // Update the user's profile photo URL
         await User.update(
           { profile_photo: publicUrl },
           { where: { id: userId } }
@@ -131,7 +122,6 @@ export const updatePhoto = async (req, res) => {
         res.status(500).send({ error: err.message });
       });
 
-      // Start uploading the file to Google Cloud
       blobStream.end(req.file.buffer);
     } catch (err) {
       res.status(500).send({ error: err.message });
@@ -141,18 +131,15 @@ export const updatePhoto = async (req, res) => {
 
 export const getprofileById = async (req, res) => {
   try {
-    const userId = req.params.id; // Ambil parameter ID dari URL
-    console.log('User ID:', userId); // Debugging, pastikan ID diterima
-
-    // Query ke database menggunakan Sequelize
+    const userId = req.params.id; 
+    console.log('User ID:', userId); 
     const user = await User.findByPk(userId);
 
-    // Jika user tidak ditemukan atau tidak memiliki profile photo
     if (!user || !user.profile_photo) {
       return res.status(404).send({ message: 'Profile photo not found.' });
     }
 
-    // Jika ditemukan, kirimkan response
+
     res.status(200).send({
       message: 'Profile photo found',
       url: user.profile_photo,
@@ -167,7 +154,6 @@ export const getprofileById = async (req, res) => {
 
 export const editProfile = async (req, res) => {
   try {
-    // req.user is already populated by the middleware
     const user = req.user;
 
     const { full_name, email,username, gender, age } = req.body;

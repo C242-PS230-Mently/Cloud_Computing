@@ -1,6 +1,5 @@
 import { User, UserOtp } from "../../models/UserModel.js";
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import nodemailer from "nodemailer";
 
 
@@ -21,16 +20,14 @@ export const requestPasswordReset = async (req, res) => {
 
     const otp = generateOtp();
 
-    // Simpan OTP ke database
+
     await UserOtp.create({
         email: user.email,
         otp,
     });
 
-    // Format OTP untuk HTML (setiap digit terpisah)
     const formattedOtp = otp.split('').map(digit => `<span style="margin: 0 5px; font-size: 24px; font-weight: bold;">${digit}</span>`).join('');
 
-    // Konfigurasi nodemailer
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -44,15 +41,15 @@ export const requestPasswordReset = async (req, res) => {
         to: user.email,
         subject: "Mently: Password Reset OTP",
         html: `
-            <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-                <h2 style="color: #333;">Password Reset Request</h2>
-                <p>Your OTP for resetting your password is:</p>
-                <div style="background: #f9f9f9; padding: 10px 20px; display: inline-block; border: 1px solid #ddd; border-radius: 5px;">
-                    ${formattedOtp}
-                </div>
-                <p style="margin-top: 20px;">This OTP is valid for 5 minutes. Please do not share it with anyone.</p>
-                <p>Thank you,<br>Mently Support Team</p>
-            </div>
+        <div style="font-family: Arial, sans-serif; line-height: 1.8; color: #333;">
+        <h2 style="color: #333; margin-bottom: 20px;">Permintaan Atur Ulang Kata Sandi</h2>
+        <p style="margin-bottom: 15px;">Kode OTP Anda untuk mengatur ulang kata sandi adalah:</p>
+        <div style="background: #f9f9f9; padding: 15px 25px; display: inline-block; border: 1px solid #ddd; border-radius: 8px; font-size: 18px; font-weight: bold;">
+                 ${formattedOtp}
+    </div>
+         <p style="margin-top: 20px; margin-bottom: 15px;">Kode OTP ini berlaku selama <strong>5 menit</strong>. Mohon jangan membagikannya kepada siapa pun untuk menjaga keamanan akun Anda.</p>
+         <p style="margin-top: 30px;">Terima kasih,<br><strong>Tim Dukungan Mently</strong></p>
+    </div>
         `,
     };
 
@@ -74,27 +71,21 @@ export const resetPassword = async (req, res) => {
     }
 
     try {
-        // Cari OTP di database
         const otpEntry = await UserOtp.findOne({ where: { otp } });
         if (!otpEntry) {
             return res.status(400).json({ msg: "Invalid or expired OTP" });
         }
 
-        // Cari pengguna berdasarkan email dari entri OTP
         const user = await User.findOne({ where: { email: otpEntry.email } });
         if (!user) {
             return res.status(404).json({ msg: "User not found" });
         }
 
-        // Hash password baru
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-        // Update password pengguna
         user.password = hashedPassword;
         await user.save();
-
-        // Hapus OTP setelah digunakan
         await UserOtp.destroy({ where: { otp } });
 
         res.status(200).json({ msg: "Password reset successful" });
