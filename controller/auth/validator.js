@@ -13,7 +13,10 @@ export const joiRegister = Joi.object({
         'string.empty': 'Email wajib diisi',
         'string.email': 'Masukkan alamat email yang valid'
     }),
-    username: Joi.string().min(6).max(50).required().messages({
+    username: Joi.string().min(6).max(50).trim().required()
+    .pattern(/^\S+$/)
+    .messages({
+        'string.pattern.base':'Username tidak boleh mengandung Spasi',
         'string.empty': 'Username wajib diisi',
         'string.min': 'Username harus memiliki setidaknya 6 karakter',
         'string.max': 'Username tidak boleh lebih dari 50 karakter'
