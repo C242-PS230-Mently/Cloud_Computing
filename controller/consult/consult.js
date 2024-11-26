@@ -15,7 +15,7 @@ export const fetchApi = async (req, res) => {
         const payload = { ...req.body };
 
         // Panggil Flask API
-        const flaskResponse = await axios.post('MODEL_URL', payload);
+        const flaskResponse = await axios.post(process.env.MODEL_URL, payload);
 
         // Proses predictions dengan mengganti angka menjadi teks
         const processedPredictions = Object.fromEntries(
