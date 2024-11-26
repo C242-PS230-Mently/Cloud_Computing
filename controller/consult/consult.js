@@ -1,25 +1,41 @@
-import { Consultation,User } from "../../models/UserModel.js";
+import { Consultation, User } from "../../models/UserModel.js";
 import axios from "axios";
 
-export const fetchApi = async (req, res) => { 
+
+const levelDescriptions = {
+    1: "Rendah",
+    2: "Sedang",
+    3: "Tinggi",
+};
+
+export const fetchApi = async (req, res) => {
     try {
         const user_id = req.user.id;
-        const {full_name,username} = req.user;
+        const { username } = req.user;
         const payload = { ...req.body };
-        const flaskResponse = await axios.post('http://127.0.0.1:5000/predict', payload);
-        await User.findAll({
-            attributes: ['username']
-        })
-        await Consultation.create({
-            user_id: user_id,
-            predictions: flaskResponse.data.predictions,
-            created_at: new Date()
-        });
-        res.status(200).json({
 
-            user_id: user_id,
-            username: username,
-            ...flaskResponse.data
+        // Panggil Flask API
+        const flaskResponse = await axios.post('MODEL_URL', payload);
+
+        // Proses predictions dengan mengganti angka menjadi teks
+        const processedPredictions = Object.fromEntries(
+            Object.entries(flaskResponse.data.predictions).map(([key, value]) => [key, levelDescriptions[value] || "Tidak diketahui"])
+        );
+
+        // Simpan ke database
+        await Consultation.create({
+            user_id,
+            predictions: processedPredictions,
+            created_at: new Date(),
+        });
+
+        // Kirim respons ke frontend
+        res.status(200).json({
+            user_id,
+            username,
+            message: flaskResponse.data.message,
+            predictions: processedPredictions,
+            statusCode: flaskResponse.data.statusCode,
         });
     } catch (error) {
         console.error('Error connecting to Flask API:', error.message);
