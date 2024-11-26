@@ -37,11 +37,11 @@ export const Register = async (req, res) => {
         
         const existMail = await User.findOne({ where: { email } });
         if (existMail) {
-            return res.status(400).json({ msg: 'Email is already registered' });
+            return res.status(400).json({ msg: 'Email ini telah terdaftar' });
         }
         const existUser = await User.findOne({ where: { username } });
         if (existUser) {
-            return res.status(400).json({ msg: 'Username is already registered' });
+            return res.status(400).json({ msg: 'Username ini telah terdaftar' });
         }
 
 
@@ -96,11 +96,11 @@ export const Login = async (req, res) => {
         });
 
         if (!user) {
-            return res.status(400).json({ msg: 'Email or username is not registered' });
+            return res.status(400).json({ msg: 'Email belum terdaftar' });
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(400).json({ msg: 'Email or password is incorrect' });
+            return res.status(400).json({ msg: 'Email atau Password salah' });
         }
         const accessToken = generateAccessToken(user);
         user.token = accessToken;
