@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import sequelize from "./config/database.js";
 import axios from 'axios';
 dotenv.config();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8080;
 
 
 const app = express();
