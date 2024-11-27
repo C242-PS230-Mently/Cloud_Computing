@@ -16,6 +16,13 @@ export const fetchApi = async (req, res) => {
         const payload = { ...req.body };
         console.log('Sending payload to Flask API:', payload);
         // Panggil Flask API
+
+        for (let key in payload){
+            if (payload[key] ===null || payload[key] === undefined || payload[key] === ""){
+                return res.status(400).json({error: `field ${key} tidak boleh`})
+            }
+        }
+
         const flaskResponse = await axios.post(
             'https://ml-models-861370546933.asia-southeast2.run.app/predict',
             payload, );
