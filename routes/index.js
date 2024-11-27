@@ -54,7 +54,7 @@ router.put('/user/changepass',checkAuth,changePassword);
 
 router.get('/user/notif',checkAuth,getNotifications);
 
-router.post('/predict',checkAuth,fetchApi)
+router.post('/user/predict',checkAuth,fetchApi)
 
 
 // auth

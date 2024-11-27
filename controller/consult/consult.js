@@ -1,6 +1,7 @@
 import { Consultation, User } from "../../models/UserModel.js";
 import axios from "axios";
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 const levelDescriptions = {
     1: "Rendah",
@@ -13,9 +14,13 @@ export const fetchApi = async (req, res) => {
         const user_id = req.user.id;
         const { username } = req.user;
         const payload = { ...req.body };
-
+        console.log('Sending payload to Flask API:', payload);
         // Panggil Flask API
-        const flaskResponse = await axios.post(process.env.MODEL_URL, payload);
+        const flaskResponse = await axios.post(
+            'https://ml-models-861370546933.asia-southeast2.run.app/predict',
+            payload, );
+        
+        console.log('Flask API Response:', flaskResponse.data);
 
         // Proses predictions dengan mengganti angka menjadi teks
         const processedPredictions = Object.fromEntries(
@@ -35,6 +40,7 @@ export const fetchApi = async (req, res) => {
             username,
             message: flaskResponse.data.message,
             predictions: processedPredictions,
+            created_at: new Date(),
             statusCode: flaskResponse.data.statusCode,
         });
     } catch (error) {
