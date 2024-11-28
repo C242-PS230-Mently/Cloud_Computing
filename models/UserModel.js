@@ -41,7 +41,7 @@ export const UserNotif = sequelize.define("UserNotif", {
 export const Question = sequelize.define("Question", {
     question_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
     question_text: { type: DataTypes.TEXT, allowNull: false },
-    diagnose_id: { type: DataTypes.INTEGER, allowNull: true },
+    disorders_id: { type: DataTypes.INTEGER, allowNull: true },
 }, {
     tableName: "question",
     timestamps: false,
@@ -89,6 +89,16 @@ export const Doctor = sequelize.define('Doctor', {
   location: { type: DataTypes.STRING(150), allowNull: false },
   created_at: { type: DataTypes.DATE, defaultValue: Sequelize.NOW, allowNull: true }
 }, { tableName: 'doctors', timestamps: false });
+
+export const Consultation = sequelize.define('Consultation', {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
+    user_id: {type: DataTypes.STRING(255), allowNull: false, references: {model: User, key: 'id'}, onDelete: 'CASCADE', onUpdate: 'CASCADE'},
+    predictions: {type: DataTypes.JSON, allowNull: false},
+    created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW}
+}, {tableName: 'consultations', timestamps: false});
+// export const Solution = sequelize.define('solutions',{
+//     id: {type: DataTypes.}
+// })
 
 // Relasi with Constraints
 User.hasMany(UserNotif, { foreignKey: { name: "user_id", allowNull: false }, onDelete: "CASCADE", onUpdate: "CASCADE" });
