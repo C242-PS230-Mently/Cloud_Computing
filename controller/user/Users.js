@@ -13,7 +13,7 @@ const upload = multer({ storage: multerStorage });
 
 // dashboard
 
-export const getProfileByToken = (req,res) =>{
+export const getProfileByToken = async (req,res) =>{
   const user = req.user;  // Data pengguna yang telah terverifikasi dari token
 
   try {
