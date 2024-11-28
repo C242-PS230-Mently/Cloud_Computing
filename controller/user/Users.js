@@ -78,6 +78,7 @@ const storage = new Storage({
 const bucket = storage.bucket(process.env.GCLOUD_BUCKET);
 
 
+
 export const updatePhoto = async (req, res) => {
   upload.single('file')(req, res, async (err) => {
     if (err) {
