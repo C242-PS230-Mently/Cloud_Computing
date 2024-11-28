@@ -9,7 +9,7 @@ import { getHistory } from "../controller/consult/history.js";
 // import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
 import { createArticle, getArticles, getArticleById } from "../controller/Dashboard/routeDasboard.js";
 // import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
-import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword } from "../controller/user/Users.js";
+import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword, getProfileByToken } from "../controller/user/Users.js";
 
 import { fetchApi } from "../controller/consult/consult.js";
 
@@ -50,7 +50,7 @@ router.get('/user/photo/:id',getprofileById);
 router.post('/user/upload',checkAuth,updatePhoto);
 router.put('/user/editprofile',checkAuth,editProfile);
 router.put('/user/changepass',checkAuth,changePassword);
-
+router.get('/user/profiles',checkAuth,getProfileByToken)
 
 router.get('/user/notif',checkAuth,getNotifications);
 

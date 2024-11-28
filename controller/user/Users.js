@@ -17,13 +17,13 @@ export const getProfileByToken = async (req,res) =>{
   const user = req.user;  // Data pengguna yang telah terverifikasi dari token
 
   try {
-    // Jika kamu hanya ingin mengambil data user yang terautentikasi:
+
     const userData = await User.findOne({
-      where: { id: user.id },  // ID pengguna diambil dari token
+      where: { id: user.id },  
     });
 
     if (!userData) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: 'User Tidak Ditemukan.' });
     }
 
     return res.status(200).json({
