@@ -12,6 +12,30 @@ const upload = multer({ storage: multerStorage });
 
 
 // dashboard
+
+export const getProfileByToken = (req,res) =>{
+  const user = req.user;  // Data pengguna yang telah terverifikasi dari token
+
+  try {
+    // Jika kamu hanya ingin mengambil data user yang terautentikasi:
+    const userData = await User.findOne({
+      where: { id: user.id },  // ID pengguna diambil dari token
+    });
+
+    if (!userData) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    return res.status(200).json({
+      message: 'User profile fetched successfully',
+      data: userData,
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
 export const getDashboardById = (req, res) => {
 
     const { user } = req;
