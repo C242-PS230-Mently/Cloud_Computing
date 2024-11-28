@@ -80,18 +80,15 @@ export const Article = sequelize.define('Article', {
     category: { type: DataTypes.ENUM('article', 'workshop'), allowNull: false },
 }, {tableName: 'articles',timestamps: false});
 
-// // model doctor (belum ada)
-// export const Doctor = sequelize.define('Doctor', {
-//     id: {type: DataTypes.STRING, primaryKey: true, allowNull: false},
-//     name: {type: DataTypes.STRING, allowNull: false},
-//     specialization: {type: DataTypes.STRING, allowNull: false},
-//     phone_number: {type: DataTypes.STRING, allowNull: false},
-//     email: {type: DataTypes.STRING, allowNull: true},
-//     address: {type: DataTypes.TEXT, allowNull: true},
-//     image_url: {type: DataTypes.STRING, allowNull: true},
-//     created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
-//     updated_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW, onUpdate: DataTypes.NOW}
-// }, {tableName: 'doctors', timestamps: false});
+// model Doctor
+export const Doctor = sequelize.define('Doctor', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+  name: { type: DataTypes.STRING(100), allowNull: false },
+  specialization: { type: DataTypes.STRING(100), allowNull: false },
+  image_url: { type: DataTypes.STRING(255), allowNull: false },
+  location: { type: DataTypes.STRING(150), allowNull: false },
+  created_at: { type: DataTypes.DATE, defaultValue: Sequelize.NOW, allowNull: true }
+}, { tableName: 'doctors', timestamps: false });
 
 // Relasi with Constraints
 User.hasMany(UserNotif, { foreignKey: { name: "user_id", allowNull: false }, onDelete: "CASCADE", onUpdate: "CASCADE" });

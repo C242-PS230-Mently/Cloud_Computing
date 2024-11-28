@@ -1,51 +1,72 @@
-import { nanoid } from 'nanoid';
 import { Doctor } from '../../models/UserModel.js';
 
-// CREATE: Tambah dokter baru
+// CREATE: Menambahkan dokter baru
 export const createDoctor = async (req, res) => {
     try {
         const { name, specialization, contact, location, image_url } = req.body;
-        const id = nanoid(10);
         const newDoctor = await Doctor.create({
-            id,
             name,
             specialization,
             contact,
             location,
             image_url
         });
-        res.status(201).json(newDoctor);
+
+        res.status(201).json({
+            message: 'Doctor created successfully',
+            doctor: newDoctor
+        });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Error creating doctor' });
     }
 };
 
-// Mendapatkan semua data dokter
-export const getDoctors = async (req, res) => {
+// GET: Mendapatkan semua dokter
+export const getAllDoctors = async (req, res) => {
     try {
-        const doctors = await Doctor.findAll({ order: [['created_at', 'DESC']] });
-        res.status(201).json({
-            message : 'creating doctors is success!',
-            doctors : doctors
-        });
+        const doctors = await Doctor.findAll();
+        if (doctors.length > 0) {
+            res.status(200).json({
+                message: 'Doctors retrieved successfully',
+                doctors: doctors
+            });
+        } else {
+            res.status(404).json({
+                message: 'No doctors found'
+            });
+        }
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching doctors' });
+        console.error(error);
+        res.status(500).json({
+            message: 'Error fetching doctors',
+            error: error.message
+        });
     }
 };
 
-// GET: Mengambil data dokter berdasarkan ID
+// GET: Mendapatkan dokter berdasarkan ID
 export const getDoctorById = async (req, res) => {
     try {
-        const { id } = req.params;  // Mengambil ID dari URL
-        const doctor = await Doctor.findOne({ where: { id } }); 
-
-        if (!doctor) {
-            return res.status(404).json({ error: 'Doctor not found' });  
+        const { id } = req.params; 
+        const doctor = await Doctor.findOne({
+            where: { id }
+        });
+        if (doctor) {
+            res.status(200).json({
+                message: 'Doctor retrieved successfully',
+                doctor
+            });
+        } else {
+            res.status(404).json({
+                message: `Doctor with ID ${id} not found`
+            });
         }
-
-        res.status(200).json(doctor);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error fetching doctor' });
+        res.status(500).json({
+            message: 'Error fetching doctor by ID',
+            error: error.message
+        });
     }
 };

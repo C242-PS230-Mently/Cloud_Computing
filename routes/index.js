@@ -9,7 +9,7 @@ import { saveUserResponse } from "../controller/consult/response.js";
 import { saveUserHistory,getUserHistory } from "../controller/consult/history.js";
 // import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
 import { createArticle, getAllDataByCategory } from "../controller/Dasboard/routeDasboard.js";
-// import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
+import { createDoctor, getAllDoctors, getDoctorById } from "../controller/doctor/dokter.js";
 import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword } from "../controller/user/Users.js";
 
 const router = express.Router();
@@ -36,6 +36,11 @@ router.post('/user/articles', createArticle);
 router.get('/user/articles', getAllDataByCategory);
 router.get('/user/articles/:category', getAllDataByCategory);
 router.get('/user/articles/:category?/:id?', getAllDataByCategory);
+
+// doctor
+router.post('/user/doctors', createDoctor);
+router.get('/user/doctors', getAllDoctors);
+router.get('/user/doctors/:id', getDoctorById);
 
 //update profile
 router.get('/user/photo/:id',getprofileById);
