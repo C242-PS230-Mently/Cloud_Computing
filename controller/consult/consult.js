@@ -2,7 +2,8 @@ import { Consultation, User } from "../../models/UserModel.js";
 import axios from "axios";
 import dotenv from 'dotenv';
 dotenv.config();
-
+const Model_URL = process.env.MODEL_URL;
+console.log(Model_URL);
 const levelDescriptions = {
     1: "Rendah",
     2: "Sedang",
@@ -24,7 +25,7 @@ export const fetchApi = async (req, res) => {
         }
 
         const flaskResponse = await axios.post(
-            'https://ml-models-861370546933.asia-southeast2.run.app/predict',
+            Model_URL,
             payload, );
         
         console.log('Flask API Response:', flaskResponse.data);
