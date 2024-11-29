@@ -1,7 +1,9 @@
 import { Consultation, User } from "../../models/UserModel.js";
 import axios from "axios";
-
-
+import dotenv from 'dotenv';
+dotenv.config();
+const Model_URL = process.env.MODEL_URL;
+console.log(Model_URL);
 const levelDescriptions = {
     1: "Rendah",
     2: "Sedang",
@@ -13,9 +15,20 @@ export const fetchApi = async (req, res) => {
         const user_id = req.user.id;
         const { username } = req.user;
         const payload = { ...req.body };
-
+        console.log('Sending payload to Flask API:', payload);
         // Panggil Flask API
-        const flaskResponse = await axios.post(process.env.MODEL_URL, payload);
+
+        for (let key in payload){
+            if (payload[key] ===null || payload[key] === undefined || payload[key] === ""){
+                return res.status(400).json({error: `field ${key} tidak boleh`})
+            }
+        }
+
+        const flaskResponse = await axios.post(
+            Model_URL,
+            payload, );
+        
+        console.log('Flask API Response:', flaskResponse.data);
 
         // Proses predictions dengan mengganti angka menjadi teks
         const processedPredictions = Object.fromEntries(
@@ -35,6 +48,7 @@ export const fetchApi = async (req, res) => {
             username,
             message: flaskResponse.data.message,
             predictions: processedPredictions,
+            created_at: new Date(),
             statusCode: flaskResponse.data.statusCode,
         });
     } catch (error) {

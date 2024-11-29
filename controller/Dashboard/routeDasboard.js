@@ -1,79 +1,94 @@
-import { nanoid } from 'nanoid';
 import { Article } from '../../models/UserModel.js';
 
-// CREATE: Tambah artikel baru
+// CREATE data
 export const createArticle = async (req, res) => {
     try {
-        const { title, publisher, image_url, snippet, full_article_link } = req.body;
+        const { title, publisher, image_url, snippet, full_article_link, category } = req.body;
 
-        const newArticle = await Article.create({
-            title,
-            publisher,
-            image_url,
-            snippet,
+        const newData = await Article.create({
+            title, 
+            publisher, 
+            image_url, 
+            snippet, 
+            category, // workshop dan article
             full_article_link
         });
 
-        res.status(201).json(newArticle);  
+        res.status(201).json(newData);
     } catch (error) {
-        console.error('Error creating article:', error); 
-        res.status(500).json({ error: 'Error creating article', message: error.message });  
+        console.error('Error creating data:', error);
+        res.status(500).json({ error: 'Error creating data', message: error.message });
     }
 };
 
-
-// READ: Ambil semua artikel
-export const getArticles = async (req, res) => {
+// UPDATE data berdasarkan ID
+export const updateArticle = async (req, res) => {
     try {
-        const articles = await Article.findAll({ order: [['created_at', 'DESC']] });
-        res.status(200).json({
-            message: 'Fetching articles is successful!',
-            articles: articles
+        const { title, publisher, image_url, snippet, full_article_link, category } = req.body;
+        const data = await Article.findByPk(req.params.id);
+
+        if (!data) {
+            return res.status(404).json({ error: 'Data tidak ditemukan' });
+        }
+
+        await data.update({ title, publisher, image_url, snippet, full_article_link, category });
+        res.status(200).json(data);
+    } catch (error) {
+        console.error('Error updating data:', error);
+        res.status(500).json({ error: 'Error updating data' });
+    }
+};
+
+// READ: Ambil semua data, berdasarkan kategori, atau berdasarkan ID
+export const getAllDataByCategory = async (req, res) => {
+    try {
+        const { category, id } = req.params;
+
+        if (id) {
+            const data = await Article.findByPk(id);
+            if (!data) {
+                return res.status(404).json({ error: 'Data tidak ditemukan' });
+            }
+
+            if (data.category !== category) {
+                return res.status(400).json({
+                    error: `Data dengan ID ${id} tidak ada di dalam category ${category}`,
+                });
+            }
+
+            return res.status(200).json({
+                message: 'Sukses mengambil data berdasarkan ID!',
+                data,
+            });
+        }
+
+        if (!category) {
+            const allData = await Article.findAll({ order: [['created_at', 'DESC']] });
+
+            const workshops = allData.filter(item => item.category === 'workshop');
+            const articles = allData.filter(item => item.category === 'article');
+
+            return res.status(200).json({
+                message: 'Sukses mengambil semua data!',
+                data: { workshops, articles },
+            });
+        }
+
+        if (!['article', 'workshop'].includes(category)) {
+            return res.status(400).json({ error: 'Invalid category' });
+        }
+
+        const filteredData = await Article.findAll({
+            where: { category },
+            order: [['created_at', 'DESC']],
+        });
+
+        return res.status(200).json({
+            message: `mengambil data di dalam kategori ${category} successful!`,
+            data: filteredData,
         });
     } catch (error) {
-        console.error('Error fetching articles:', error);  
-        res.status(500).json({ error: 'Error fetching articles' });
+        console.error('Error fetching data:', error);
+        res.status(500).json({ error: 'Error fetching data' });
     }
 };
-
-// READ: Ambil artikel berdasarkan ID
-export const getArticleById = async (req, res) => {
-    try {
-        const article = await Article.findByPk(req.params.id);
-        if (!article) {
-            return res.status(404).json({ error: 'Article not found' });
-        }
-        res.json(article);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching article' });
-    }
-};
-
-// // UPDATE: Ubah artikel berdasarkan ID
-// router.put('/articles/:id', async (req, res) => {
-//     try {
-//         const { title, publisher, image_url, snippet, full_article_link } = req.body;
-//         const article = await Article.findByPk(req.params.id);
-//         if (!article) {
-//             return res.status(404).json({ error: 'Article not found' });
-//         }
-//         await article.update({ title, publisher, image_url, snippet, full_article_link });
-//         res.json(article);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Error updating article' });
-//     }
-// });
-
-// // DELETE: Hapus artikel berdasarkan ID
-// router.delete('/articles/:id', async (req, res) => {
-//     try {
-//         const article = await Article.findByPk(req.params.id);
-//         if (!article) {
-//             return res.status(404).json({ error: 'Article not found' });
-//         }
-//         await article.destroy();
-//         res.json({ message: 'Article deleted successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'Error deleting article' });
-//     }
-// });

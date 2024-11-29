@@ -7,9 +7,9 @@ import { getAllQuestions } from "../controller/consult/question.js";
 import { saveUserResponse } from "../controller/consult/response.js";
 import { getHistory } from "../controller/consult/history.js";
 // import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
-import { createArticle, getArticles, getArticleById } from "../controller/Dashboard/routeDasboard.js";
-// import { createDoctor, getDoctors, getDoctorById } from "../controller/doctor/dokter.js";
-import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword } from "../controller/user/Users.js";
+import { getAllDataByCategory, createArticle } from "../controller/Dashboard/routeDasboard.js";
+import { createDoctor, getAllDoctors, getDoctorById } from "../controller/doctor/dokter.js";
+import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword, getProfileByToken } from "../controller/user/Users.js";
 
 import { fetchApi } from "../controller/consult/consult.js";
 
@@ -39,22 +39,31 @@ router.get('/user/history' ,checkAuth,getHistory);
 router.get('/user/questions', getAllQuestions);
 router.post('/user/responses', saveUserResponse);
 
-// Dasboard
-router.get('/user/articles', getArticles);
-router.get('/user/articles/', getArticleById);
-
+// dasboard
+// router.post('/user/articles', createArticle);
 router.get('/user/dashboard/',checkAuth,getDashboardById,getNotifications);
+
+// articles
+router.post('/user/articles', createArticle); 
+router.get('/user/articles', getAllDataByCategory);
+router.get('/user/articles/:category', getAllDataByCategory);
+router.get('/user/articles/:category?/:id?', getAllDataByCategory);
+
+// doctor
+router.post('/user/doctors', createDoctor);
+router.get('/user/doctors', getAllDoctors);
+router.get('/user/doctors/:id', getDoctorById);
 
 //update profile
 router.get('/user/photo/:id',getprofileById);
 router.post('/user/upload',checkAuth,updatePhoto);
 router.put('/user/editprofile',checkAuth,editProfile);
 router.put('/user/changepass',checkAuth,changePassword);
-
+router.get('/user/profiles',checkAuth,getProfileByToken)
 
 router.get('/user/notif',checkAuth,getNotifications);
 
-router.post('/predict',checkAuth,fetchApi)
+router.post('/user/predict',checkAuth,fetchApi)
 
 
 // auth
@@ -63,12 +72,6 @@ router.post('/auth/login',Login);
 router.post('/auth/logout',checkAuth, Logout);
 router.post('/auth/forgot-password', requestPasswordReset);
 router.post('/auth/reset-password', resetPassword);
-
-// // data doctor (belum ada)
-// router.post('/user/doctors', createDoctor);
-// router.get('/user/doctors', getDoctors);
-// router.get('/user/doctors/:id', getDoctorById);
-
 
 
 export default router;

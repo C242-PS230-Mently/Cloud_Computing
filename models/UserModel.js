@@ -76,9 +76,19 @@ export const Article = sequelize.define('Article', {
     image_url: {type: DataTypes.STRING,allowNull: true},
     snippet: {type: DataTypes.TEXT,allowNull: true},
     full_article_link: {type: DataTypes.STRING,allowNull: false},
-    created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW}
+    created_at: {type: DataTypes.DATE,defaultValue: DataTypes.NOW},
+    category: { type: DataTypes.ENUM('article', 'workshop'), allowNull: false },
 }, {tableName: 'articles',timestamps: false});
 
+// model Doctor
+export const Doctor = sequelize.define('Doctor', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false },
+  name: { type: DataTypes.STRING(100), allowNull: false },
+  specialization: { type: DataTypes.STRING(100), allowNull: false },
+  image_url: { type: DataTypes.STRING(255), allowNull: false },
+  location: { type: DataTypes.STRING(150), allowNull: false },
+  created_at: { type: DataTypes.DATE, defaultValue: Sequelize.NOW, allowNull: true }
+}, { tableName: 'doctors', timestamps: false });
 
 export const Consultation = sequelize.define('Consultation', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
@@ -89,18 +99,6 @@ export const Consultation = sequelize.define('Consultation', {
 // export const Solution = sequelize.define('solutions',{
 //     id: {type: DataTypes.}
 // })
-// // model doctor (belum ada)
-// export const Doctor = sequelize.define('Doctor', {
-//     id: {type: DataTypes.STRING, primaryKey: true, allowNull: false},
-//     name: {type: DataTypes.STRING, allowNull: false},
-//     specialization: {type: DataTypes.STRING, allowNull: false},
-//     phone_number: {type: DataTypes.STRING, allowNull: false},
-//     email: {type: DataTypes.STRING, allowNull: true},
-//     address: {type: DataTypes.TEXT, allowNull: true},
-//     image_url: {type: DataTypes.STRING, allowNull: true},
-//     created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
-//     updated_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW, onUpdate: DataTypes.NOW}
-// }, {tableName: 'doctors', timestamps: false});
 
 // Relasi with Constraints
 User.hasMany(UserNotif, { foreignKey: { name: "user_id", allowNull: false }, onDelete: "CASCADE", onUpdate: "CASCADE" });
