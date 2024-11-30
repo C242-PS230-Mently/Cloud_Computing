@@ -97,7 +97,7 @@ export const createNotification = async ({ user_id, notif_type, notif_content, i
 };
 
 
-const limitPhoto = 1048576 ;
+const limitPhoto =  2097152 ;
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage,
           limits: {fileSize: limitPhoto}
@@ -124,6 +124,11 @@ export const updatePhoto = async (req, res) => {
 
     if (!req.file) {
       return res.status(400).send('No file uploaded.');
+    }
+    if (req.files && req.files.length > 1) {
+      return res.status(400).send({
+        error: 'Hanya satu file yang dapat diupload.',
+      });
     }
 
     
