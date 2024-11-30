@@ -5,16 +5,11 @@ import { Storage } from '@google-cloud/storage';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { editPass, joiEdit } from "../auth/validator.js";
-const multerStorage = multer.memoryStorage();
-const upload = multer({ storage: multerStorage });
 
 
-
-
-// dashboard
 
 export const getProfileByToken = async (req,res) =>{
-  const user = req.user;  // Data pengguna yang telah terverifikasi dari token
+  const user = req.user;  
 
   try {
 
@@ -28,7 +23,14 @@ export const getProfileByToken = async (req,res) =>{
 
     return res.status(200).json({
       message: 'User profile fetched successfully',
-      data: userData,
+      data: {
+        fullName: user.full_name,
+        username: user.username,
+        email: user.email,
+        age: user.age,
+        gender: user.gender
+        
+      }
     });
 
   } catch (error) {
@@ -95,6 +97,12 @@ export const createNotification = async ({ user_id, notif_type, notif_content, i
 };
 
 
+const limitPhoto = 1048576 ;
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage,
+          limits: {fileSize: limitPhoto}
+ });
+
 const storage = new Storage({
   projectId: process.env.GCLOUD_PROJECT,
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
@@ -106,6 +114,11 @@ const bucket = storage.bucket(process.env.GCLOUD_BUCKET);
 export const updatePhoto = async (req, res) => {
   upload.single('file')(req, res, async (err) => {
     if (err) {
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).send({
+          error: 'File terlalu besar. Maksimal ukuran file adalah 1 MB.',
+        });
+      }
       return res.status(500).send({ error: err.message });
     }
 
