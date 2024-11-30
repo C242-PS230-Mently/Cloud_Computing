@@ -245,6 +245,8 @@ export const changePassword = async (req,res) =>{
   }
 }
 
+export const url='https://storage.googleapis.com/mently-bucket/gif/twittervid.com_hamukukka_123938.gif';
+
 
 
 

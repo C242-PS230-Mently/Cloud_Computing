@@ -32,3 +32,34 @@ export const createWelcomeNotification = async (userId) => {
         throw new Error("Gagal membuat welcome notif");
     }
 };
+
+export const getNotifByToken = async (req, res) => {
+    try {
+        const user_id = req.user.id;
+
+        
+        const notifications = await UserNotif.findAll({
+            where: { user_id },
+            order: [['createdAt', 'DESC']],  
+        });
+
+        if (!notifications.length) {
+            return res.status(404).json({ message: "No notifications found for this user" });
+        }
+
+    
+        res.status(200).json({
+            user_id,
+            notifications: notifications.map((notif) => ({
+                notif_id: notif.notif_id,
+                notif_type: notif.notif_type,
+                notif_content: notif.notif_content,
+                is_read: notif.is_read,
+                createdAt: notif.createdAt,
+            })),
+        });
+    } catch (error) {
+        console.error('Error fetching notifications:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
