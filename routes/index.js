@@ -1,72 +1,41 @@
 import express from "express";
-import axios from "axios";
-import { getUsers, Login, Register, Logout } from "../controller/auth/Auth.js"; 
 import checkAuth from "../middleware/checkAuth.js";
+import { getUsers, Login, Register, Logout } from "../controller/auth/Auth.js"; 
 import { requestPasswordReset,resetPassword } from "../controller/auth/forgotPass.js";
 import { getAllQuestions } from "../controller/consult/question.js";
-import { saveUserResponse } from "../controller/consult/response.js";
 import { getHistory } from "../controller/consult/history.js";
-// import { createNotification,getNotifications, getDashboardById } from "../controller/user/Users.js";
-import { getAllDataByCategory, createArticle } from "../controller/Dashboard/routeDasboard.js";
-import { createDoctor, getAllDoctors, getDoctorById } from "../controller/doctor/dokter.js";
-import { createNotification,getNotifications, getDashboardById,updatePhoto,getprofileById,editProfile, changePassword, getProfileByToken } from "../controller/user/Users.js";
-
 import { fetchApi } from "../controller/consult/consult.js";
+import { getNotifByToken } from "../controller/user/notif.js";
+import { getAllDataByCategory } from "../controller/Dashboard/routeDasboard.js";
+import { getAllDoctors, getDoctorById } from "../controller/doctor/dokter.js";
+import { getDashboardById,updatePhoto,editProfile, changePassword, getProfileByToken, url } from "../controller/user/Users.js";
+
 
 const router = express.Router();
 
-//get all users
-
 router.get('/', async (req, res) => {
-    try {
-        const imageUrl = 'https://storage.googleapis.com/mently-bucket/gif/twittervid.com_hamukukka_123938.gif';
-        const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-
-        res.set('Content-Type', 'image/gif'); 
-        res.send(response.data); 
-    } catch (error) {
-        console.error('Error fetching image:', error);
-        res.status(500).send('Internal Server Error.');
-    }
+    res.redirect(url);
 });
-
-
 
 router.get('/users', getUsers);
 router.get('/user/history' ,checkAuth,getHistory);
-
-//konsul
 router.get('/user/questions', getAllQuestions);
-router.post('/user/responses', saveUserResponse);
 
-// dasboard
-// router.post('/user/articles', createArticle);
-router.get('/user/dashboard/',checkAuth,getDashboardById,getNotifications);
+router.get('/user/dashboard',checkAuth,getDashboardById);
+router.get('/user/dashboard/:category', getAllDataByCategory);
+router.get('/user/dashboard/:category?/:id?', getAllDataByCategory);
 
-// articles
-router.post('/user/articles', createArticle); 
-router.get('/user/articles', getAllDataByCategory);
-router.get('/user/articles/:category', getAllDataByCategory);
-router.get('/user/articles/:category?/:id?', getAllDataByCategory);
-
-// doctor
-router.post('/user/doctors', createDoctor);
 router.get('/user/doctors', getAllDoctors);
 router.get('/user/doctors/:id', getDoctorById);
 
-//update profile
-router.get('/user/photo/:id',getprofileById);
+router.get('/user/profile',checkAuth,getProfileByToken)
 router.post('/user/upload',checkAuth,updatePhoto);
-router.put('/user/editprofile',checkAuth,editProfile);
-router.put('/user/changepass',checkAuth,changePassword);
-router.get('/user/profiles',checkAuth,getProfileByToken)
+router.put('/user/edit-profile',checkAuth,editProfile);
+router.put('/user/change-pass',checkAuth,changePassword);
 
-router.get('/user/notif',checkAuth,getNotifications);
-
+router.get('/user/notif',checkAuth,getNotifByToken);
 router.post('/user/predict',checkAuth,fetchApi)
 
-
-// auth
 router.post('/auth/register', Register);
 router.post('/auth/login',Login);
 router.post('/auth/logout',checkAuth, Logout);
