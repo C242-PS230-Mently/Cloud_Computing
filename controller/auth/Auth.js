@@ -9,7 +9,7 @@ import { Op } from "sequelize";
 
 
 const generateAccessToken = (user) => {
-    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '50m' });
+    return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '10d' });
 };
 
 
@@ -117,6 +117,7 @@ export const Login = async (req, res) => {
                 fullName: user.full_name,
                 username: user.username,
                 email: user.email,
+                photo: user.profile_photo,
                 
             }
         });

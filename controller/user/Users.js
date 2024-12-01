@@ -113,32 +113,39 @@ const bucket = storage.bucket(process.env.GCLOUD_BUCKET);
 
 export const updatePhoto = async (req, res) => {
   upload.single('file')(req, res, async (err) => {
+    // Penanganan error jika ukuran file terlalu besar
     if (err) {
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).send({
-          error: 'File terlalu besar. Maksimal ukuran file adalah 1 MB.',
+          error: 'File terlalu besar. Maksimal ukuran file adalah 2 MB.',
         });
       }
       return res.status(500).send({ error: err.message });
     }
 
+    // Pastikan hanya ada satu file yang diupload
     if (!req.file) {
-      return res.status(400).send('No file uploaded.');
-    }
-    if (req.files && req.files.length > 1) {
       return res.status(400).send({
-        error: 'Hanya satu file yang dapat diupload.',
+        error: 'Tidak ada file yang diupload. Pastikan file disertakan.',
       });
     }
 
-    
-    const user = req.user;  
+    // Jika ada lebih dari satu file yang dikirimkan, akan menghasilkan error
+    if (req.files) {
+      return res.status(400).send({
+        error: 'Hanya diperbolehkan mengupload satu file. Pastikan hanya satu file yang dipilih.',
+      });
+    }
 
+    const user = req.user;  
     const userId = user.id;  
 
-    if (!userId) {
-      return res.status(400).send('User ID is required.');
-    }
+    // Jika userId tidak ditemukan
+    // if (!userId) {
+    //   return res.status(400).send({
+    //     error: 'ID pengguna tidak ditemukan. Pastikan pengguna sudah terautentikasi.',
+    //   });
+    // }
 
     try {
       const blob = bucket.file(`userProfile/${userId}-profile-pic-${Date.now()}`);
@@ -156,7 +163,7 @@ export const updatePhoto = async (req, res) => {
         );
 
         res.status(200).send({
-          message: 'Profile photo uploaded successfully',
+          message: 'Foto profil berhasil diupload.',
           url: publicUrl,
         });
       });
@@ -171,6 +178,7 @@ export const updatePhoto = async (req, res) => {
     }
   });
 };
+
 
 export const getprofileById = async (req, res) => {
   try {
