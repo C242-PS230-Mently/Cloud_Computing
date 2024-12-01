@@ -2,6 +2,8 @@ import { Consultation, User,UserNotif } from "../../models/UserModel.js";
 import axios from "axios";
 import dotenv from 'dotenv';
 import {nanoid} from 'nanoid';
+import moment from 'moment-timezone';
+
 dotenv.config();
 const Model_URL = process.env.MODEL_URL;
 console.log(Model_URL);
@@ -13,7 +15,9 @@ const levelDescriptions = {
 
 export const fetchApi = async (req, res) => {
     try {
+        
         const user_id = req.user.id;
+        
         const { username } = req.user;
         const payload = { ...req.body };
      
@@ -31,15 +35,18 @@ export const fetchApi = async (req, res) => {
         const processedPredictions = Object.fromEntries(
             Object.entries(flaskResponse.data.predictions).map(([key, value]) => [key, levelDescriptions[value] || "Tidak diketahui"])
         );
-
+        const totalConsultations = await Consultation.count({ where: { user_id },distinct: true });
+        const notificationMessage = `Selamat atas konsultasi ke-${totalConsultations} kamu.Yuk Cek di sini untuk melihat detailnya.`;
+        const totalConsult = `Konsultasi ${totalConsultations}`;
         const consultation = await Consultation.create({
+
             user_id,
             predictions: processedPredictions,
-            created_at: new Date(),
+            total_consult: totalConsult,
         });
-        const totalConsultations = await Consultation.count({ where: { user_id } });
-        const notificationMessage = `Selamat atas konsultasi ke-${totalConsultations} kamu.Yuk Cek di sini untuk melihat detailnya.`;
+        const createdAt = moment(consultation.created_at).format("YYYY-MM-DD HH:mm:ss");
         
+
         await UserNotif.create({
             user_id,
             notif_id: nanoid(21),
@@ -49,11 +56,13 @@ export const fetchApi = async (req, res) => {
         });
 
         res.status(200).json({
+            
             user_id,
             username,
+            Consult: totalConsult,
             message: flaskResponse.data.message,
             predictions: processedPredictions,
-            created_at: new Date(),
+            created_at: createdAt,
             statusCode: flaskResponse.data.statusCode,
         });
     } catch (error) {
