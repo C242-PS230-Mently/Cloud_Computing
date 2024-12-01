@@ -36,7 +36,7 @@ export const fetchApi = async (req, res) => {
             Object.entries(flaskResponse.data.predictions).map(([key, value]) => [key, levelDescriptions[value] || "Tidak diketahui"])
         );
         const totalConsultations = await Consultation.count({ where: { user_id },distinct: true });
-        const notificationMessage = `Selamat atas konsultasi ke-${totalConsultations} kamu.Yuk Cek di sini untuk melihat detailnya.`;
+        const notificationMessage =await `Selamat atas konsultasi ke-${totalConsultations} kamu.Yuk Cek di sini untuk melihat detailnya.`;
         const totalConsult = `Konsultasi ${totalConsultations}`;
         const consultation = await Consultation.create({
 
