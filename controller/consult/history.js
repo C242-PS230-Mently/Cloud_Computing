@@ -12,8 +12,9 @@ export const getHistory = async (req, res) => {
             where: { user_id: id }, 
             order: [['created_at', 'DESC']] 
         });
-        const Mapconsult = consultations.map(consultation => {
-            const createdAt = moment(consultation.created_at).format("YYYY-MM-DD HH:mm:ss");
+        
+        const Mapconsult = consultations.map (consultation => {
+            const createdAt =moment(consultation.created_at).format("YYYY-MM-DD HH:mm:ss");
             return {
                 ...consultation.toJSON(),  
                 created_at: createdAt 

@@ -38,13 +38,16 @@ export const fetchApi = async (req, res) => {
         const totalConsultations = await Consultation.count({ where: { user_id },distinct: true });
         const notificationMessage =await `Selamat atas konsultasi ke-${totalConsultations} kamu.Yuk Cek di sini untuk melihat detailnya.`;
         const totalConsult = `Konsultasi ${totalConsultations}`;
+        
         const consultation = await Consultation.create({
 
             user_id,
             predictions: processedPredictions,
+            created_at,
             total_consult: totalConsult,
         });
-        const createdAt = moment(consultation.created_at).format("YYYY-MM-DD HH:mm:ss");
+        const createdAt =moment(consultation.created_at).format("YYYY-MM-DD HH:mm:ss");
+        
         
 
         await UserNotif.create({
