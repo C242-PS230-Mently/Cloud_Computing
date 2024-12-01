@@ -46,7 +46,7 @@ export const fetchApi = async (req, res) => {
             created_at,
             total_consult: totalConsult,
         });
-        const createdAt =moment(consultation.created_at).format("YYYY-MM-DD HH:mm:ss");
+        const createdAt = moment(consultation.created_at).tz('Asia/Singapore').format("YYYY-MM-DD HH:mm:ss");
         
         
 
