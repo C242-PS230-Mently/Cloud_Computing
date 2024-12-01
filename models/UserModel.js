@@ -94,7 +94,8 @@ export const Consultation = sequelize.define('Consultation', {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
     user_id: {type: DataTypes.STRING(255), allowNull: false, references: {model: User, key: 'id'}, onDelete: 'CASCADE', onUpdate: 'CASCADE'},
     predictions: {type: DataTypes.JSON, allowNull: false},
-    created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW}
+    created_at: {type: DataTypes.DATE, defaultValue: DataTypes.NOW},
+    total_consult: {type: DataTypes.STRING, allowNull: false}
 }, {tableName: 'consultations', timestamps: false});
 // export const Solution = sequelize.define('solutions',{
 //     id: {type: DataTypes.}
