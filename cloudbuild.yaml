@@ -1,0 +1,44 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/mently-apps:$COMMIT_SHA'
+      - '.'
+
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/mently-apps:$COMMIT_SHA'
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    args:
+      - 'gcloud'
+      - 'run'
+      - 'deploy'
+      - 'mently-api'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/mently-apps:$COMMIT_SHA'
+      - '--platform'
+      - 'managed'
+      - '--region'
+      - 'asia-southeast2'
+      - '--allow-unauthenticated'
+      - '--set-secrets=JWT_SECRET=JWT_SECRET:latest'
+      - '--set-secrets=JWT_RESET_SECRET=JWT_RESET_SECRET:latest'
+      - '--set-secrets=EMAIL_USER=EMAIL_USER:latest'
+      - '--set-secrets=EMAIL_PASS=EMAIL_PASS:latest'
+      - '--set-secrets=GOOGLE_APPLICATION_CREDENTIALS=GOOGLE_APPLICATION_CREDENTIALS:latest'
+      - '--set-secrets=GCLOUD_PROJECT=GCLOUD_PROJECT:latest'
+      - '--set-secrets=GCLOUD_BUCKET=GCLOUD_BUCKET:latest'
+      - '--set-secrets=DB_NAME=DB_NAME:latest'
+      - '--set-secrets=DB_USER=DB_USER:latest'
+      - '--set-secrets=DB_PASS=DB_PASS:latest'
+      - '--set-secrets=DB_HOST=DB_HOST:latest'
+      - '--set-secrets=MODEL_URL=MODEL_URL:latest'
+
+images:
+  - 'gcr.io/$PROJECT_ID/mently-apps:$COMMIT_SHA'
