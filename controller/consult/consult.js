@@ -19,14 +19,8 @@ export const fetchApi = async (req, res) => {
         const user_id = req.user.id;
         
         const { username } = req.user;
-        const payload = { ...req.body };
+        const payload = req.body;
      
-
-        for (let key in payload){
-            if (payload[key] ===null || payload[key] === undefined || payload[key] === ""){
-                return res.status(400).json({error: `field ${key} tidak boleh`})
-            }
-        }
 
         const flaskResponse = await axios.post(
             Model_URL,
@@ -37,7 +31,7 @@ export const fetchApi = async (req, res) => {
         );
         const totalConsultations = await Consultation.count({ where: { user_id },distinct: true });
         const notificationMessage =await `Selamat atas konsultasi ke-${totalConsultations} kamu.Yuk Cek di sini untuk melihat detailnya.`;
-        const totalConsult = `Konsultasi ${totalConsultations}`;
+        const totalConsult = await `Konsultasi ${totalConsultations}`;
         
         const consultation = await Consultation.create({
 
